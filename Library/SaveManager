@@ -2,7 +2,7 @@ local HttpService = game:GetService("HttpService")
 local name = "Shiro"
 
 local SaveManager = {} do
-	SaveManager.Folder = "nexus-001"
+	SaveManager.Folder = "Shiro"
 	SaveManager.Ignore = {}
 	SaveManager.Parser = {
 		Toggle = {
