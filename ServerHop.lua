@@ -72,5 +72,3 @@ function module:Teleport(placeId)
 	end
 end
 return module
-
-module:Teleport(game.PlaceId)
