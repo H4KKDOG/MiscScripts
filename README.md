@@ -1,0 +1,12 @@
+Fisch
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/MiscScripts/refs/heads/main/Fisch"))()
+```
+ServerHop
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/MiscScripts/refs/heads/main/ServerHop"))()
+```
+Dex
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/Library/refs/heads/main/Dex"))()
+```
