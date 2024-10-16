@@ -99,12 +99,12 @@ local function auto_cast(toggle)
             if child.Name == "reel" then
                 task.wait(3.0)
                 VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, true, game, 1)
-                task.wait(0.75)
+                task.wait(0.1)
                 VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, false, game, 1)
                 task.wait(0.1)
                 player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
                 player.Character:FindFirstChildOfClass("Tool").events.cast:FireServer(100)
-                Notifications:Notification("Auto Cast", "Spoofed (Perfect)", "Done", 3)
+                Notifications:Notification("Auto Cast", "Spoofed (Perfect)", "Done", 5)
             end
         end)
     end
