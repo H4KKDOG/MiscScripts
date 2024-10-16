@@ -102,8 +102,9 @@ local function auto_cast(toggle)
                 VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, true, game, 1)
                 task.wait(0.15)
                 VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, false, game, 1)
+				task.wait(0.15)
 				VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, false, game, 1)
-				task.wait(0.05)
+				player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
                 player.Character:FindFirstChildOfClass("Tool").events.cast:FireServer(100)
                 Notifications:Notification("Auto Cast", "Spoofed (Perfect)", "Done", 5)
             end
@@ -238,6 +239,7 @@ end
 --// Fishing Spot Teleport
 local fishingSpots = {
 	{ "Sunstone (Common Crate)", Vector3.new(-1149.08508, 134.49998, -1055.80151) },
+	{ "Vertigo (Small Stone)", Vector3.new(-107.99476623535156, -731.946533203125, 1207.8134765625) },
     { "Moosewood (Small Island)", Vector3.new(229.60299682617188, 139.34976196289062, 43.50540542602539) },
     { "Snowcap (Cave)", Vector3.new(2805.062744140625, 131.85032653808594, 2712.624267578125) }
 }
