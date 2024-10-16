@@ -100,11 +100,10 @@ local function auto_cast(toggle)
                 task.wait(3.0)
 				VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, true, game, 1)
                 VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, true, game, 1)
-                task.wait(0.25)
+                task.wait(0.15)
                 VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, false, game, 1)
 				VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, false, game, 1)
 				task.wait(0.05)
-                player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
                 player.Character:FindFirstChildOfClass("Tool").events.cast:FireServer(100)
                 Notifications:Notification("Auto Cast", "Spoofed (Perfect)", "Done", 5)
             end
@@ -227,7 +226,7 @@ local locations = {
     { "Keepers Altar", Vector3.new(1296.32080078125, -805.292236328125, -298.93817138671875) },
     { "Harvester Spike", Vector3.new(-1254.696044921875, 137.56063842773438, 1554.47119140625) },
     { "Mushgrove Swamp", Vector3.new(2441.1611328125, 130.904052734375, -683.6802368164062) },
-    { "The Vertigo", Vector3.new(-95.83425903320312, -513.2993774414062, 1116.5545654296875) }
+    { "Vertigo", Vector3.new(-95.83425903320312, -513.2993774414062, 1116.5545654296875) }
 }
 
 for _, location in ipairs(locations) do
