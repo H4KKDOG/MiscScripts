@@ -76,7 +76,6 @@ local function auto_reel(toggle)
                     local playerbar = bar:FindFirstChild("playerbar")
                     if playerbar then
                         task.wait(5.0)
-						GuiService.SelectedObject = nil
                         ReplicatedStorage.events:FindFirstChild("reelfinished"):FireServer(100, true)
                     end
                 end
@@ -97,6 +96,7 @@ local function auto_cast(toggle)
     if toggle then
         castConnection = playerGui.ChildRemoved:Connect(function(child)
             if child.Name == "reel" then
+				GuiService.SelectedObject = nil
                 task.wait(3.0)
 				VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, true, game, 1)
                 VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, true, game, 1)
