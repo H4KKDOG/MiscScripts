@@ -98,6 +98,7 @@ local function auto_cast(toggle)
         castConnection = playerGui.ChildRemoved:Connect(function(child)
             if child.Name == "reel" then
                 task.wait(3.0)
+		VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, true, game, 1)
                 VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, true, game, 1)
                 task.wait(0.1)
                 VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, false, game, 1)
