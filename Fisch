@@ -1,6 +1,6 @@
 --// Services
 _Hawk = "RunUI"
-local Hawk = loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/Library/refs/heads/main/Hawk", true))()
+local Hawk = loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/Library/refs/heads/main/Hawk"))()
 local Window = Hawk:Window({
 	ScriptName = "Fisch TP",
 	DestroyIfExists = true,
