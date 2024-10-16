@@ -157,20 +157,16 @@ Window:Minimize({
 
 local tab1 = Window:Tab("Island")
 local tab2 = Window:Tab("Fishing")
-local tab3 = Window:Tab("Abundance")
-local tab4 = Window:Tab("Debug")
+local tab3 = Window:Tab("Debug")
 
 local Island = tab1:Section("Select Island")
 local Fishing = tab2:Section("Select Spot")
-local Abundance = tab3:Section("Select Abundance")
-local Debug = tab4:Section("Dev/Misc")
+local Debug = tab3:Section("Dev/Misc")
 
 Island:Line()
 Island:Line()
 Fishing:Line()
 Fishing:Line()
-Abundance:Line()
-Abundance:Line()
 Debug:Line()
 Debug:Line()
 
@@ -247,18 +243,6 @@ local fishingSpots = {
 
 for _, location in ipairs(fishingSpots) do
     Fishing:Button(location[1],"TP to Location",function()
-        humanoidRootPart.CFrame = CFrame.new(location[2])
-    end)
-end
-
---// Abundance Teleport
-local abundanceLocations = {
-    { "Amberjack (Ocean)", Vector3.new(537.463134765625, 137.1532440185547, -172.55160522460938) },
-    { "Arapaima (Land)", Vector3.new(-1742.292724609375, 148.31674194335938, 577.1846923828125) }
-}
-
-for _, location in ipairs(abundanceLocations) do
-    Abundance:Button(location[1],"TP to Location",function()
         humanoidRootPart.CFrame = CFrame.new(location[2])
     end)
 end
