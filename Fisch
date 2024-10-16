@@ -1,10 +1,11 @@
 --// Services
 _Hawk = "RunUI"
 local Hawk = loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/Library/refs/heads/main/Hawk"))()
+
 local Window = Hawk:Window({
-	ScriptName = "Fisch TP",
-	DestroyIfExists = true,
-	Theme = "Dark"
+    ScriptName = "Fisch TP",
+    DestroyIfExists = true,
+    Theme = "Dark"
 })
 
 local HttpService = game:GetService("HttpService")
@@ -74,15 +75,15 @@ local function auto_reel(toggle)
                 local bar = reel:FindFirstChild("bar")
                 if bar then
                     local playerbar = bar:FindFirstChild("playerbar")
-                    if playerbar then
-                        task.wait(5.0)
-                        ReplicatedStorage.events:FindFirstChild("reelfinished"):FireServer(100, true)
+                    local fish = bar:FindFirstChild("fish")
+                    if playerbar and fish then
+                        playerbar.Position = fish.Position
                     end
                 end
             end
         end)
     end
-    if debugEnabled then Notifications:Notification("Auto-Reel", "Set to: " .. tostring(toggle), "Notify", 5) end
+    if debugEnabled then Notifications:Notification("Auto-Reel", "Set to : " .. tostring(toggle), "Notify", 5) end
 end
 
 --// Auto Cast Function
@@ -96,21 +97,21 @@ local function auto_cast(toggle)
     if toggle then
         castConnection = playerGui.ChildRemoved:Connect(function(child)
             if child.Name == "reel" then
-				GuiService.SelectedObject = nil
+                GuiService.SelectedObject = nil
                 task.wait(3.0)
-				VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, true, game, 1)
+                VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, true, game, 1)
                 VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, true, game, 1)
                 task.wait(0.15)
                 VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, false, game, 1)
-				task.wait(0.15)
-				VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, false, game, 1)
-				player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
+                task.wait(0.15)
+                VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, false, game, 1)
+                player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
                 player.Character:FindFirstChildOfClass("Tool").events.cast:FireServer(100)
                 Notifications:Notification("Auto Cast", "Spoofed (Perfect)", "Done", 5)
             end
         end)
     end
-    if debugEnabled then Notifications:Notification("Auto-Cast", "Set to: " .. tostring(toggle), "Notify", 5) end
+    if debugEnabled then Notifications:Notification("Auto-Cast", "Set to : " .. tostring(toggle), "Notify", 5) end
 end
 
 --// Auto Shake Function
@@ -136,23 +137,23 @@ local function auto_shake(toggle)
             end
         end)
     end
-    if debugEnabled then Notifications:Notification("Auto-Shake", "Set to: " .. tostring(toggle), "Notify", 5) end
+    if debugEnabled then Notifications:Notification("Auto-Shake", "Set to : " .. tostring(toggle), "Notify", 5) end
 end
 
 --// GUI Setup
 Window:Close({
-	visibility = false,
-	Callback = function()
-		Window:Destroy()
-	end,
+    visibility = false,
+    Callback = function()
+        Window:Destroy()
+    end,
 })
 
 Window:Minimize({
-	visibility = true,
-	OpenButton = true,
-	Callback = function()
+    visibility = true,
+    OpenButton = true,
+    Callback = function()
 
-	end,
+    end,
 })
 
 local tab1 = Window:Tab("Island")
@@ -178,38 +179,38 @@ Debug:Button("Current Position","Set to Clipboard",function()
 end)
 
 Debug:Button("Rejoin Server","Server",function()
-	TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, player)
+    TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, player)
 end)
 
 Debug:Button("Change Server","Server",function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/MiscScripts/refs/heads/main/ServerHop"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/MiscScripts/refs/heads/main/ServerHop"))()
 end)
 
 Debug:Line()
 Debug:Line()
 
 Debug:Toggle("Auto Reel", true ,function(value)
-	if value == true then
-		auto_reel(true)
-	elseif value == false then
-		auto_reel(false)
-	end
+    if value == true then
+        auto_reel(true)
+    elseif value == false then
+        auto_reel(false)
+    end
 end)
 
 Debug:Toggle("Auto Cast", true ,function(value)
-	if value == true then
-		auto_cast(true)
-	elseif value == false then
-		auto_cast(false)
-	end
+    if value == true then
+        auto_cast(true)
+    elseif value == false then
+        auto_cast(false)
+    end
 end)
 
 Debug:Toggle("Auto Shake", true ,function(value)
-	if value == true then
-		auto_shake(true)
-	elseif value == false then
-		auto_shake(false)
-	end
+    if value == true then
+        auto_shake(true)
+    elseif value == false then
+        auto_shake(false)
+    end
 end)
 
 --// Area/Island Teleport
@@ -217,7 +218,7 @@ local locations = {
     { "Moosewood", Vector3.new(383.060546875, 134.50001525878906, 267.64471435546875) },
     { "Roslit Hamlet", Vector3.new(-1442.3291015625, 133, 726.9091796875) },
     { "Terrapin Island", Vector3.new(-192.4793243408203, 135.2742919921875, 1953.1597900390625) },
-	{ "Sunstone Island", Vector3.new(-919.7451782226562, 134.69882202148438, -1121.707763671875) },
+    { "Sunstone Island", Vector3.new(-919.7451782226562, 134.69882202148438, -1121.707763671875) },
     { "Statue Of Sovereignty", Vector3.new(31.58206558227539, 144.49334716796875, -1021.61083984375) },
     { "Snowcap Island", Vector3.new(2620.824951171875, 139.7838592529297, 2423.62890625) },
     { "The Arc", Vector3.new(998.9711303710938, 131.3202362060547, -1237.1431884765625) },
@@ -235,8 +236,8 @@ end
 
 --// Fishing Spot Teleport
 local fishingSpots = {
-	{ "Sunstone (Common Crate)", Vector3.new(-1149.08508, 134.49998, -1055.80151) },
-	{ "Vertigo (Small Stone)", Vector3.new(-107.99476623535156, -731.946533203125, 1207.8134765625) },
+    { "Sunstone (Common Crate)", Vector3.new(-1149.08508, 134.49998, -1055.80151) },
+    { "Vertigo (Small Stone)", Vector3.new(-107.99476623535156, -731.946533203125, 1207.8134765625) },
     { "Moosewood (Small Island)", Vector3.new(229.60299682617188, 139.34976196289062, 43.50540542602539) },
     { "Snowcap (Cave)", Vector3.new(2805.062744140625, 131.85032653808594, 2712.624267578125) }
 }
