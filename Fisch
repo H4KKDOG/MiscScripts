@@ -75,8 +75,8 @@ local function auto_reel(toggle)
                 if bar then
                     local playerbar = bar:FindFirstChild("playerbar")
                     if playerbar then
-                        GuiService.SelectedObject = nil
                         task.wait(5.0)
+						GuiService.SelectedObject = nil
                         ReplicatedStorage.events:FindFirstChild("reelfinished"):FireServer(100, true)
                     end
                 end
