@@ -100,7 +100,7 @@ local function auto_cast(toggle)
                 GuiService.SelectedObject = nil
                 task.wait(3.0)
                 VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, true, game, 1)
-task.wait()
+task.wait(0.15)
 player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
                 player.Character:FindFirstChildOfClass("Tool").events.cast:FireServer(100)
                 VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, false, game, 1)
