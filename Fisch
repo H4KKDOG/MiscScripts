@@ -1,5 +1,5 @@
 --// Services
-local _Hawk = "RunUI"
+_Hawk = "RunUI"
 local Hawk = loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/Library/refs/heads/main/Hawk"))()
 local Window = Hawk:Window({ScriptName = "Fisch TP", DestroyIfExists = true, Theme = "Dark"})
 local Close = Window:Close({visibility = false, Callback = function() Window:Destroy() end,})
@@ -87,7 +87,7 @@ playerGui.DescendantAdded:Connect(function(Descendant)
     end
 end)
 
-playerGui.PlayerGui.DescendantRemoving:Connect(function(Descendant)
+playerGui.DescendantRemoving:Connect(function(Descendant)
     if Descendant.Name == 'reel' then
         Finished = false
     end
