@@ -135,6 +135,8 @@ local function auto_shake(toggle)
                 task.wait(0.5)
                 selectUI(Descendant)
                 KeyPress(Enum.KeyCode.Return)
+            else
+                GuiService.SelectedObject = nil
             end
         end)
     end
