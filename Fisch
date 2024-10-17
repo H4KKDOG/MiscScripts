@@ -134,8 +134,6 @@ playerGui.DescendantAdded:Connect(function(Descendant)
         GuiService.SelectedObject = Descendant
         task.wait(0.69)
         KeyPress(Enum.KeyCode.Return)
-    else
-        GuiService.SelectedObject = nil
     end
     if Descendant.Name == 'playerbar' and Descendant.Parent.Name == 'bar' then
         Finished = true
