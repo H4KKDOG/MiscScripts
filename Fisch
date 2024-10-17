@@ -139,7 +139,6 @@ playerGui.DescendantAdded:Connect(function(Descendant)
     end
     if Descendant.Name == 'playerbar' and Descendant.Parent.Name == 'bar' then
         Finished = true
-        GuiService.SelectedObject = nil
 
         while Finished do
             ReplicatedStorage.events.reelfinished:FireServer(100, true)
@@ -156,7 +155,7 @@ playerGui.DescendantRemoving:Connect(function(Descendant)
         player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
         task.wait(3.0)
         VIM:SendMouseButtonEvent(0, 0, 0, true, game, 1)
-        task.wait(0.15)
+        task.wait(0.123)
         VIM:SendMouseButtonEvent(0, 0, 0, false, game, 1)
     end
 end)
