@@ -69,6 +69,7 @@ local function replaceAFKEvent()
         FakeAFK.Name = "afk"
         FakeAFK.Parent = ReplicatedStorage:FindFirstChild("events")
         
+        print("AntiAFK")
         AFK:Destroy()
     end
 end
