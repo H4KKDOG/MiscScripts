@@ -60,6 +60,19 @@ local function KeyPress(keyCode)
     VIM:SendKeyEvent(false, keyCode, false, game)
 end
 
+--// Destroy AFK
+local function replaceAFKEvent()
+    local AFK = ReplicatedStorage:FindFirstChild("events"):FindFirstChild("afk")
+    if AFK then
+        task.wait(0.5)
+        local FakeAFK = Instance.new("RemoteEvent")
+        FakeAFK.Name = "afk"
+        FakeAFK.Parent = ReplicatedStorage:FindFirstChild("events")
+        
+        AFK:Destroy()
+    end
+end
+
 --// Auto Reel Function
 local reelConnection
 local function auto_reel(toggle)
@@ -98,13 +111,11 @@ local function auto_cast(toggle)
         castConnection = playerGui.ChildRemoved:Connect(function(child)
             if child.Name == "reel" then
                 GuiService.SelectedObject = nil
-                player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
                 task.wait(3.0)
+                player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
                 VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, true, game, 1)
                 task.wait(0.15)
                 VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, false, game, 1)
-                task.wait(0.01)
-                player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
                 player.Character:FindFirstChildOfClass("Tool").events.cast:FireServer(100)
             end
         end)
@@ -252,6 +263,12 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if not gameProcessed and input.KeyCode == Enum.KeyCode.LeftControl then
         Hawk:ToggleUI()
     end
+end)
+
+local WindowAFK
+WindowAFK = UserInputService.WindowFocused:Connect(function()
+    replaceAFKEvent()
+    WindowAFK:Disconnect()
 end)
 
 Hawk:ToggleUI()
