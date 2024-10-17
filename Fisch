@@ -107,7 +107,6 @@ local function auto_cast(toggle)
     if toggle then
         castConnection = playerGui.ChildRemoved:Connect(function(child)
             if child.Name == "reel" then
-                GuiService.SelectedObject = nil
                 player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
                 task.wait(3.0)
                 VIM:SendMouseButtonEvent(1, 1, 0, true, game, 1)
@@ -128,21 +127,16 @@ local function auto_shake(toggle)
     if shakeConnection then
         shakeConnection:Disconnect()
         shakeConnection = nil
-        GuiService.SelectedObject = nil
     end
 
     if toggle then
-        shakeConnection = playerGui.ChildAdded:Connect(function(child)
-            if child.Name == "shakeui" then
-                child:WaitForChild("safezone").ChildAdded:Connect(function(c)
-                    if c.Name == "button" then
-                        selectUI(c)
-                        KeyPress(Enum.KeyCode.Return)
-                        task.wait(0.5)
-                    else
-                        GuiService.SelectedObject = nil
-                    end
-                end)
+        shakeConnection = playerGui.DescendantAdded:Connect(function(Descendant)
+            if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
+                task.wait(0.5)
+                local ButtonPosition, ButtonSize = Descendant.AbsolutePosition, Descendant.AbsoluteSize
+        
+                VIM:SendMouseButtonEvent(ButtonPosition.X + (ButtonSize.X / 2), ButtonPosition.Y + (ButtonSize.Y / 2), 0, true, game, 1)
+                VIM:SendMouseButtonEvent(ButtonPosition.X + (ButtonSize.X / 2), ButtonPosition.Y + (ButtonSize.Y / 2), 0, false, game, 1)
             end
         end)
     end
