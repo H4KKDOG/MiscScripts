@@ -132,7 +132,7 @@ local function auto_shake(toggle)
     if toggle then
         shakeConnection = playerGui.DescendantAdded:Connect(function(Descendant)
             if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
-                task.wait(0.5)
+                task.wait(0.75)
                 selectUI(Descendant)
                 KeyPress(Enum.KeyCode.Return)
             else
