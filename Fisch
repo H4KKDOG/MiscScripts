@@ -114,10 +114,10 @@ local function auto_cast(toggle)
                 GuiService.SelectedObject = nil
                 player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
                 task.wait(3.0)
-                VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, true, game, 1)
-                task.wait(0.15)
-                VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, false, game, 1)
-                task.wait(0.01)
+                VIM:SendMouseButtonEvent(1, 1, 0, true, game, 1)
+                task.wait(0.25)
+                VIM:SendMouseButtonEvent(1, 1, 0, false, game, 1)
+                task.wait(0.05)
                 player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
                 player.Character:FindFirstChildOfClass("Tool").events.cast:FireServer(100)
             end
@@ -140,9 +140,9 @@ local function auto_shake(toggle)
             if child.Name == "shakeui" then
                 child:WaitForChild("safezone").ChildAdded:Connect(function(c)
                     if c.Name == "button" then
-                        task.wait(0.5)
                         selectUI(c)
                         KeyPress(Enum.KeyCode.Return)
+                        task.wait(0.5)
                     else
                         GuiService.SelectedObject = nil
                     end
@@ -261,17 +261,20 @@ for _, location in ipairs(fishingSpots) do
     end)
 end
 
---// Key Bind for GUI Toggle
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if not gameProcessed and input.KeyCode == Enum.KeyCode.LeftControl then
-        Hawk:ToggleUI()
-    end
-end)
+if UserInputService.KeyboardEnabled and not UserInputService.TouchEnabled then
+    UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if not gameProcessed and input.KeyCode == Enum.KeyCode.LeftControl then
+            Hawk:ToggleUI()
+        end
+    end)
 
-local WindowAFK
-WindowAFK = UserInputService.WindowFocused:Connect(function()
+    local WindowAFK
+    WindowAFK = UserInputService.WindowFocused:Connect(function()
+        replaceAFKEvent()
+        WindowAFK:Disconnect()
+    end)
+
+    Hawk:ToggleUI()
+elseif UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
     replaceAFKEvent()
-    WindowAFK:Disconnect()
-end)
-
-Hawk:ToggleUI()
+end
