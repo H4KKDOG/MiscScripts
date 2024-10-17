@@ -1,12 +1,9 @@
 --// Services
-_Hawk = "RunUI"
+local _Hawk = "RunUI"
 local Hawk = loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/Library/refs/heads/main/Hawk"))()
-
-local Window = Hawk:Window({
-    ScriptName = "Fisch TP",
-    DestroyIfExists = true,
-    Theme = "Dark"
-})
+local Window = Hawk:Window({ScriptName = "Fisch TP", DestroyIfExists = true, Theme = "Dark"})
+local Close = Window:Close({visibility = false, Callback = function() Window:Destroy() end,})
+local Minimize = Window:Minimize({visibility = true, OpenButton = true, Callback = function() end,})
 
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
@@ -19,7 +16,6 @@ local GuiService = game:GetService("GuiService")
 local TeleportService = game:GetService("TeleportService")
 local Workspace = game:GetService("Workspace")
 
---// Player Variables
 local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
@@ -27,21 +23,9 @@ local head = character:WaitForChild("Head")
 local playerGui = player:WaitForChild("PlayerGui")
 local Camera = Workspace.CurrentCamera
 
---// Debug Mode
 local debugEnabled = true
+local Finished = false
 local Notifications = Hawk:AddNotifications()
-
---// HTTP Request Function
-local function http_request(url, content)
-    local response = http_request({
-        Url = url,
-        Method = "POST",
-        Headers = { ["Content-Type"] = "application/json" },
-        Body = HttpService:JSONEncode({ content })
-    })
-    repeat task.wait() until response
-    return response
-end
 
 --// Select GUI
 local function selectUI(GUI)
@@ -70,95 +54,46 @@ local function replaceAFKEvent()
     end
 end
 
---// Auto Reel Function
-local reelConnection
-local function auto_reel(toggle)
-    if reelConnection then
-        reelConnection:Disconnect()
-        reelConnection = nil
-    end
-
-    if toggle then
-        reelConnection = RunService.RenderStepped:Connect(function()
-            local reel = playerGui:FindFirstChild("reel")
-            if reel then
-                local bar = reel:FindFirstChild("bar")
-                if bar then
-                    local playerbar = bar:FindFirstChild("playerbar")
-                    local fish = bar:FindFirstChild("fish")
-                    if playerbar and fish then
-                        playerbar.Position = fish.Position
-                    end
-                end
-            end
-        end)
-    end
-    if debugEnabled then Notifications:Notification("Auto-Reel", "Set to : " .. tostring(toggle), "Notify", 5) end
-end
-
 --// Auto Cast Function
-local castConnection
-local function auto_cast(toggle)
-    if castConnection then
-        castConnection:Disconnect()
-        castConnection = nil
+playerGui.ChildRemoved:Connect(function(child)
+    if child.Name == "reel" then
+        player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
+        task.wait(3.0)
+        VIM:SendMouseButtonEvent(1, 1, 0, true, game, 1)
+        task.wait(0.25)
+        VIM:SendMouseButtonEvent(1, 1, 0, false, game, 1)
+        task.wait(0.05)
+        player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
+        player.Character:FindFirstChildOfClass("Tool").events.cast:FireServer(100)
     end
+end)
 
-    if toggle then
-        castConnection = playerGui.ChildRemoved:Connect(function(child)
-            if child.Name == "reel" then
-                player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
-                task.wait(3.0)
-                VIM:SendMouseButtonEvent(1, 1, 0, true, game, 1)
-                task.wait(0.25)
-                VIM:SendMouseButtonEvent(1, 1, 0, false, game, 1)
-                task.wait(0.05)
-                player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
-                player.Character:FindFirstChildOfClass("Tool").events.cast:FireServer(100)
-            end
-        end)
+--// Auto Shake and Reel Function
+playerGui.DescendantAdded:Connect(function(Descendant)
+    if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
+        task.wait(0.75)
+        selectUI(Descendant)
+        KeyPress(Enum.KeyCode.Return)
+    else
+        GuiService.SelectedObject = nil
     end
-    if debugEnabled then Notifications:Notification("Auto-Cast", "Set to : " .. tostring(toggle), "Notify", 5) end
-end
+    if Descendant.Name == 'playerbar' and Descendant.Parent.Name == 'bar' then
+        Finished = true
 
---// Auto Shake Function
-local shakeConnection
-local function auto_shake(toggle)
-    if shakeConnection then
-        shakeConnection:Disconnect()
-        shakeConnection = nil
+        while Finished do
+            ReplicatedStorage.events.reelfinished:FireServer(100, true)
+            task.wait(0.1)
+        end
     end
+end)
 
-    if toggle then
-        shakeConnection = playerGui.DescendantAdded:Connect(function(Descendant)
-            if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
-                task.wait(0.75)
-                selectUI(Descendant)
-                KeyPress(Enum.KeyCode.Return)
-            else
-                GuiService.SelectedObject = nil
-            end
-        end)
+playerGui.PlayerGui.DescendantRemoving:Connect(function(Descendant)
+    if Descendant.Name == 'reel' then
+        Finished = false
     end
-    if debugEnabled then Notifications:Notification("Auto-Shake", "Set to : " .. tostring(toggle), "Notify", 5) end
-end
+end)
 
 --// GUI Setup
-Window:Close({
-    visibility = false,
-    Callback = function()
-        Window:Destroy()
-    end,
-})
-
-Window:Minimize({
-    visibility = true,
-    OpenButton = true,
-    Callback = function()
-
-    end,
-})
-
 local tab1 = Window:Tab("Island")
 local tab2 = Window:Tab("Fishing")
 local tab3 = Window:Tab("Debug")
@@ -187,33 +122,6 @@ end)
 
 Debug:Button("Change Server","Server",function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/MiscScripts/refs/heads/main/ServerHop"))()
-end)
-
-Debug:Line()
-Debug:Line()
-
-Debug:Toggle("Auto Reel", true ,function(value)
-    if value == true then
-        auto_reel(true)
-    elseif value == false then
-        auto_reel(false)
-    end
-end)
-
-Debug:Toggle("Auto Cast", true ,function(value)
-    if value == true then
-        auto_cast(true)
-    elseif value == false then
-        auto_cast(false)
-    end
-end)
-
-Debug:Toggle("Auto Shake", true ,function(value)
-    if value == true then
-        auto_shake(true)
-    elseif value == false then
-        auto_shake(false)
-    end
 end)
 
 --// Area/Island Teleport
