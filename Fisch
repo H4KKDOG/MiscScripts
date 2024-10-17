@@ -156,11 +156,8 @@ playerGui.DescendantRemoving:Connect(function(Descendant)
         player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
         task.wait(3.0)
         VIM:SendMouseButtonEvent(0, 0, 0, true, game, 1)
-        wait(0.5)
-        VIM:SendMouseButtonEvent(0, 0, 0, false, game, 1)
         wait(0.1)
-        player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
-        player.Character:FindFirstChildOfClass("Tool").events.cast:FireServer(100)
+        VIM:SendMouseButtonEvent(0, 0, 0, false, game, 1)
     end
 end)
 
