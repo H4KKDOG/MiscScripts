@@ -131,9 +131,11 @@ end
 --// Auto Shake and Reel Function
 playerGui.DescendantAdded:Connect(function(Descendant)
     if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
-        GuiService.SelectedObject = Descendant
         task.wait(0.69)
-        KeyPress(Enum.KeyCode.Return)
+        local ButtonPosition, ButtonSize = Descendant.AbsolutePosition, Descendant.AbsoluteSize
+
+        VIM:SendMouseButtonEvent(ButtonPosition.X + (ButtonSize.X / 2), ButtonPosition.Y + (ButtonSize.Y / 2), 0, true, game, 1)
+        VIM:SendMouseButtonEvent(ButtonPosition.X + (ButtonSize.X / 2), ButtonPosition.Y + (ButtonSize.Y / 2), 0, false, game, 1)
     end
     if Descendant.Name == 'playerbar' and Descendant.Parent.Name == 'bar' then
         Finished = true
@@ -154,7 +156,7 @@ playerGui.DescendantRemoving:Connect(function(Descendant)
         player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
         task.wait(3.0)
         VIM:SendMouseButtonEvent(0, 0, 0, true, game, 1)
-        task.wait(0.15)
+        wait(0.25)
         VIM:SendMouseButtonEvent(0, 0, 0, false, game, 1)
         wait()
         player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
