@@ -112,11 +112,13 @@ local function auto_cast(toggle)
         castConnection = playerGui.ChildRemoved:Connect(function(child)
             if child.Name == "reel" then
                 GuiService.SelectedObject = nil
-                task.wait(3.0)
                 player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
+                task.wait(3.0)
                 VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, true, game, 1)
                 task.wait(0.15)
                 VIM:SendMouseButtonEvent(1, 1, Enum.UserInputType.MouseButton1.Value, false, game, 1)
+                task.wait(0.01)
+                player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
                 player.Character:FindFirstChildOfClass("Tool").events.cast:FireServer(100)
             end
         end)
