@@ -31,10 +31,6 @@ local Camera = Workspace.CurrentCamera
 local debugEnabled = true
 local Notifications = Hawk:AddNotifications()
 
---// Initial Notifications
-Notifications:Notification("Fisch", "Press LeftControl to Toggle GUI.", "Notify", 5)
-Notifications:Notification("Fisch", "Simple Script.", "Notify", 5)
-
 --// HTTP Request Function
 local function http_request(url, content)
     local response = http_request({
@@ -274,7 +270,10 @@ if UserInputService.KeyboardEnabled and not UserInputService.TouchEnabled then
         WindowAFK:Disconnect()
     end)
 
+    Notifications:Notification("Fisch", "Press LeftControl to Toggle GUI.", "Notify", 5)
+    Notifications:Notification("Fisch", "Simple Script.", "Notify", 5)
     Hawk:ToggleUI()
 elseif UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
     replaceAFKEvent()
+    Notifications:Notification("Fisch", "Simple Script.", "Notify", 5)
 end
