@@ -133,10 +133,8 @@ local function auto_shake(toggle)
         shakeConnection = playerGui.DescendantAdded:Connect(function(Descendant)
             if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
                 task.wait(0.5)
-                local ButtonPosition, ButtonSize = Descendant.AbsolutePosition, Descendant.AbsoluteSize
-        
-                VIM:SendMouseButtonEvent(ButtonPosition.X + (ButtonSize.X / 2), ButtonPosition.Y + (ButtonSize.Y / 2), 0, true, game, 1)
-                VIM:SendMouseButtonEvent(ButtonPosition.X + (ButtonSize.X / 2), ButtonPosition.Y + (ButtonSize.Y / 2), 0, false, game, 1)
+                selectUI(Descendant)
+                KeyPress(Enum.KeyCode.Return)
             end
         end)
     end
