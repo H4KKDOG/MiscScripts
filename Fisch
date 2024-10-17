@@ -27,13 +27,6 @@ local debugEnabled = true
 local Finished = false
 local Notifications = Hawk:AddNotifications()
 
---// Select GUI
-local function selectUI(GUI)
-    if GUI and GUI.Selectable then
-        GuiService.SelectedObject = GUI
-    end
-end
-
 --// KeyPress
 local function KeyPress(keyCode)
     VIM:SendKeyEvent(true, keyCode, false, game)
@@ -54,31 +47,18 @@ local function replaceAFKEvent()
     end
 end
 
---// Auto Cast Function
-playerGui.ChildRemoved:Connect(function(child)
-    if child.Name == "reel" then
-        player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
-        task.wait(3.0)
-        VIM:SendMouseButtonEvent(1, 1, 0, true, game, 1)
-        task.wait(0.25)
-        VIM:SendMouseButtonEvent(1, 1, 0, false, game, 1)
-        task.wait(0.05)
-        player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
-        player.Character:FindFirstChildOfClass("Tool").events.cast:FireServer(100)
-    end
-end)
-
 --// Auto Shake and Reel Function
 playerGui.DescendantAdded:Connect(function(Descendant)
     if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
         task.wait(0.75)
-        selectUI(Descendant)
-        KeyPress(Enum.KeyCode.Return)
-    else
-        GuiService.SelectedObject = nil
+        local ButtonPosition, ButtonSize = Descendant.AbsolutePosition, Descendant.AbsoluteSize
+
+        VIM:SendMouseButtonEvent(ButtonPosition.X + (ButtonSize.X / 2), ButtonPosition.Y + (ButtonSize.Y / 2), 0, true, game, 1)
+        VIM:SendMouseButtonEvent(ButtonPosition.X + (ButtonSize.X / 2), ButtonPosition.Y + (ButtonSize.Y / 2), 0, false, game, 1)
     end
     if Descendant.Name == 'playerbar' and Descendant.Parent.Name == 'bar' then
         Finished = true
+        GuiService.SelectedObject = nil
 
         while Finished do
             ReplicatedStorage.events.reelfinished:FireServer(100, true)
@@ -87,9 +67,19 @@ playerGui.DescendantAdded:Connect(function(Descendant)
     end
 end)
 
+--// Auto Cast Function
 playerGui.DescendantRemoving:Connect(function(Descendant)
     if Descendant.Name == 'reel' then
         Finished = false
+
+        player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
+        task.wait(3.0)
+        VIM:SendMouseButtonEvent(1, 1, 0, true, game, 1)
+        task.wait(0.3)
+        VIM:SendMouseButtonEvent(1, 1, 0, false, game, 1)
+        task.wait(0.1)
+        player.Character:FindFirstChildOfClass("Tool").events.reset:FireServer()
+        player.Character:FindFirstChildOfClass("Tool").events.cast:FireServer(100)
     end
 end)
 
@@ -179,3 +169,10 @@ elseif UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled th
     replaceAFKEvent()
     Notifications:Notification("Fisch", "Simple Script.", "Notify", 5)
 end
+
+Island:Line()
+Island:Line()
+Fishing:Line()
+Fishing:Line()
+Debug:Line()
+Debug:Line()
