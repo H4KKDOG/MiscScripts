@@ -158,14 +158,15 @@ coroutine.wrap(function()
 	while task.wait() do
     task.wait(30)
 
-    local playerWorkspace = workspace:FindFirstChild(playerName)
-    if playerWorkspace and playerWorkspace:FindFirstChild(config.rodName) then
-        local nRod = playerWorkspace[config.rodName]
+		local playerWorkspace = workspace:FindFirstChild(playerName)
+		if playerWorkspace and playerWorkspace:FindFirstChild(config.rodName) then
+			local nRod = playerWorkspace[config.rodName]
 
-        if not nRod:FindFirstChild("bobber") then
-            Progress = false
-        end
-    end
+			if not nRod:FindFirstChild("bobber") then
+				Progress = false
+			end
+		end
+	end
 end)()
 
 --// GUI
