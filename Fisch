@@ -1,7 +1,7 @@
 local MacLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/biggaboy212/Public-Resources/main/MacLib/maclib.lua"))()
 local Window = MacLib:Window({
     Title = "Fisch GUI",
-    Subtitle = "Shiro | V0.1.3",
+    Subtitle = "Shiro | V0.1.4",
     Size = UDim2.fromOffset(750, 500),
     DragStyle = 1,
     DisabledWindowControls = {"Exit", "Minimize"},
@@ -55,9 +55,12 @@ LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
     elseif Descendant.Name == 'playerbar' and Descendant.Parent.Name == 'bar' then
         Finished = true
 
+		local randomChance = math.random(1, 100)
+		local Perfect = randomChance <= 25
+
         if Finished then
             task.wait(5.0)
-            ReplicatedStorage.events.reelfinished:FireServer(100, false)
+            ReplicatedStorage.events.reelfinished:FireServer(100, Perfect)
         end
     end
 end)
@@ -77,25 +80,38 @@ coroutine.wrap(function()
             local playerWorkspace = workspace:FindFirstChild(playerName)
             if playerWorkspace and playerWorkspace:FindFirstChild(rodName) then
                 local nRod = playerWorkspace[rodName]
-				Progress = true
-				task.wait(3.0)
+                Progress = true
+                task.wait(3.0)
 
                 VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, true, game, 1)
-                task.wait(0.2)
+                task.wait(0.25)
                 VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, game, 1)
-				wait()
-				Character:FindFirstChild(rodName).events.reset:FireServer()
-                Character:FindFirstChild(rodName).events.cast:FireServer(100.5)
-                
-                task.wait(1.0)
+
+                wait()
+                nRod.events.reset:FireServer()
+                nRod.events.cast:FireServer(100.5)
+                Window:Notify({ Title = "Fisch Notification", Description = "AutoCast", Lifetime = 5 })
+
+                local bobberCheckDuration = 10.1
+                local checkInterval = 5.0
+                local timeElapsed = 0
+
+                while timeElapsed < bobberCheckDuration do
+                    task.wait(checkInterval)
+                    if nRod:FindFirstChild("bobber") then
+                        break
+                    end
+                    timeElapsed = timeElapsed + checkInterval
+                end
+
                 if not nRod:FindFirstChild("bobber") then
                     Progress = false
                 end
             else
                 Progress = false
             end
-			
-			task.wait()
+
+            task.wait()
         end
 
         task.wait()
@@ -105,7 +121,7 @@ end)()
 --// GUI
 local TabGroup = Window:TabGroup()
 local Teleport = TabGroup:Tab({ Name = "Teleport" })
-local Misc = TabGroup:Tab({ Name = "Spot" })
+local Misc = TabGroup:Tab({ Name = "Misc" })
 
 local TPLeft = Teleport:Section({ Side = "Left" })
 local TPRight = Teleport:Section({ Side = "Right" })
