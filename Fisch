@@ -148,6 +148,7 @@ RunService.Heartbeat:Connect(function()
         else
             Progress = false
         end
+	task.wait()
     end
 end)
 
