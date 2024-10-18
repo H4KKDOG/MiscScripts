@@ -37,7 +37,7 @@ getgenv().config = getgenv().config
 local isFirstTime = false
 local configTemplate = {
     Enabled = false,
-    rodName = false
+    rodName = "Name"
 }
 
 if not isfolder("FischConfig") then
