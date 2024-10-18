@@ -89,8 +89,8 @@ LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
         local radius = ButtonSize.X / 2
 
         -- Calculate the click position towards the bottom right within the circular area
-        local ClickPositionX = ButtonPosition.X + ButtonSize.X - radius * 0.5  -- Adjust slightly inside the edge
-        local ClickPositionY = ButtonPosition.Y + ButtonSize.Y - radius * 0.5  -- Adjust slightly inside the edge
+        local ClickPositionX = ButtonPosition.X + ButtonSize.X - radius * 0.75  -- Adjust slightly inside the edge
+        local ClickPositionY = ButtonPosition.Y + ButtonSize.Y - radius * 0.75  -- Adjust slightly inside the edge
 
         -- Send mouse button events to the calculated position
         VirtualInputManager:SendMouseButtonEvent(ClickPositionX, ClickPositionY, Enum.UserInputType.MouseButton1.Value, true, game, 1)
