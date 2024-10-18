@@ -116,7 +116,7 @@ LocalPlayer.PlayerGui.DescendantRemoving:Connect(function(Descendant)
 end)
 
 --// Cast
-coroutine.wrap(function()
+spawn(function()
     while task.wait() do
         if config.Enabled and not Progress then
             local playerWorkspace = workspace:FindFirstChild(playerName)
@@ -162,10 +162,10 @@ coroutine.wrap(function()
             end
         end
     end
-end)()
+end)
 
 --// Bobber Check
-coroutine.wrap(function()
+spawn(function()
     while task.wait() do
         task.wait(30)
 
@@ -178,7 +178,7 @@ coroutine.wrap(function()
             end
         end
     end
-end)()
+end)
 
 --// GUI
 local TabGroup = Window:TabGroup()
