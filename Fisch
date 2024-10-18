@@ -87,8 +87,8 @@ LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
 
         local radius = ButtonSize.X / 2
 
-        local ClickPositionX = ButtonPosition.X + ButtonSize.X - radius * 0.75
-        local ClickPositionY = ButtonPosition.Y + ButtonSize.Y - radius * 0.75
+        local ClickPositionX = ButtonPosition.X + ButtonSize.X - radius * 0.6
+        local ClickPositionY = ButtonPosition.Y + ButtonSize.Y - radius * 0.6
 
         if Descendant.AbsolutePosition and Descendant.AbsoluteSize ~= 20 then
             VirtualInputManager:SendMouseButtonEvent(ClickPositionX, ClickPositionY, Enum.UserInputType.MouseButton1.Value, true, game, 1)
