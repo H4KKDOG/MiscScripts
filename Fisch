@@ -132,7 +132,7 @@ spawn(function()
                     VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, game, 1)
 
                     wait(0.01)
-                    if nRod:FindFirstChild("events") then
+                    if Character:FindFirstChild(config.rodName) and nRod:FindFirstChild("events") then
                         Character:FindFirstChild(config.rodName).events.reset:FireServer()
                         Character:FindFirstChild(config.rodName).events.cast:FireServer(100.5)
                     end
