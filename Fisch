@@ -90,12 +90,10 @@ LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
         local ClickPositionX = ButtonPosition.X + ButtonSize.X - radius * 0.55
         local ClickPositionY = ButtonPosition.Y + ButtonSize.Y - radius * 0.55
 
-        print(""..ClickPositionX)
-        print(""..ClickPositionY)
-        print("")
-
-        VirtualInputManager:SendMouseButtonEvent(ClickPositionX, ClickPositionY, Enum.UserInputType.MouseButton1.Value, true, game, 1)
-        VirtualInputManager:SendMouseButtonEvent(ClickPositionX, ClickPositionY, Enum.UserInputType.MouseButton1.Value, false, game, 1)
+        if ClickPositionX ~= 29 and ClickPositionY ~= 29 then
+            VirtualInputManager:SendMouseButtonEvent(ClickPositionX, ClickPositionY, Enum.UserInputType.MouseButton1.Value, true, game, 1)
+            VirtualInputManager:SendMouseButtonEvent(ClickPositionX, ClickPositionY, Enum.UserInputType.MouseButton1.Value, false, game, 1)
+        end
     elseif Descendant.Name == 'playerbar' and Descendant.Parent.Name == 'bar' then
         Finished = true
 
