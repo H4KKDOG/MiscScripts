@@ -1,4 +1,4 @@
-local MacLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/biggaboy212/Public-Resources/main/MacLib/maclib.lua"))()
+local MacLib = loadstring(game:HttpGet("https://github.com/biggaboy212/Maclib/releases/latest/download/maclib.txt"))()
 local Window = MacLib:Window({
     Title = "Fisch GUI",
     Subtitle = "Shiro | V0.1.41",
@@ -14,6 +14,7 @@ local Players = game:GetService('Players')
 local CoreGui = game:GetService('StarterGui')
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local ContextActionService = game:GetService('ContextActionService')
+local HttpService = game:GetService("HttpService")
 local UserInputService = game:GetService("UserInputService")
 local VirtualInputManager = game:GetService('VirtualInputManager')
 local TeleportService = game:GetService("TeleportService")
@@ -23,13 +24,42 @@ local playerName = LocalPlayer.Name
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 
-local Enabled = false
 local AutoCastLoop = true
 local Casted = false
 local Progress = false
 local Finished = false
 
-local rodName = "Carbon Rod"
+getgenv().config = getgenv().config
+local isFirstTime = false
+local configTemplate = {
+    Enabled = false,
+    rodName = false
+}
+
+if not isfolder("FischConfig") then
+    isFirstTime = true
+    makefolder("FischConfig")
+end
+if not isfile("FischConfig/Cooked.config") then
+    isFirstTime = true
+    writefile("FischConfig/Cooked.config", "")
+end
+
+if isFirstTime then
+    local encodedConfig = HttpService:JSONEncode(configTemplate)
+    writefile("FischConfig/Cooked.config", encodedConfig)
+end
+
+local function loadConfig()
+    local decodedConfig = HttpService:JSONDecode(readfile("FischConfig/Cooked.config"))
+    getgenv().config = decodedConfig
+end
+local function updateConfig()
+    local encodedConfig = HttpService:JSONEncode(getgenv().config)
+    writefile("FischConfig/Cooked.config", encodedConfig)
+end
+
+loadConfig()
 
 function replaceAFKEvent()
     local AFK = ReplicatedStorage:FindFirstChild("events"):FindFirstChild("afk")
@@ -76,10 +106,10 @@ end)
 --// Cast
 coroutine.wrap(function()
     while AutoCastLoop do
-        if Enabled and not Progress then
+        if config.Enabled and not Progress then
             local playerWorkspace = workspace:FindFirstChild(playerName)
-            if playerWorkspace and playerWorkspace:FindFirstChild(rodName) then
-                local nRod = playerWorkspace[rodName]
+            if playerWorkspace and playerWorkspace:FindFirstChild(config.rodName) then
+                local nRod = playerWorkspace[config.rodName]
 
                 if not nRod:FindFirstChild("bobber") then
                     Progress = true
@@ -90,8 +120,8 @@ coroutine.wrap(function()
                     VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, game, 1)
 
                     wait(0.05)
-                    Character:FindFirstChild(rodName).events.reset:FireServer()
-                    Character:FindFirstChild(rodName).events.cast:FireServer(100.5)
+                    Character:FindFirstChild(config.rodName).events.reset:FireServer()
+                    Character:FindFirstChild(config.rodName).events.cast:FireServer(100.5)
 
                     local bobberCheckDuration = 9.9
                     local checkInterval = 10.0
@@ -152,19 +182,29 @@ MiscRight:Button({ Name = "Get Current Pos",
 })
 
 --// MiscLeft
-local AutoC = MiscLeft:Keybind({
-	Name = "AutoCast",
-	Callback = function()
-		Enabled = not Enabled
-
-		Window:Notify({ Title = "Fisch Notification", Description = `AutoCast : {Enabled}`, Lifetime = 5 })
+MiscLeft:Input({
+	Name = "Rod Name",
+	Placeholder = "Rod",
+	AcceptedCharacters = "Alphabetic",
+	Callback = function(input)
+		config.rodName = input
+        updateConfig()
 	end,
-	onBinded = function(bind)
-		Window:Notify({ Title = "Fisch Notification", Description = "KeyBind : "..tostring(bind.Name), Lifetime = 5 })
-	end,
-})
+}, "RodN")
 
-AutoC:Bind(Enum.KeyCode.F)
+local AutoCToggle = MiscLeft:Toggle({
+    Name = "Auto Cast",
+    Default = false,
+    Callback = function(value)
+        if config.rodName == nil or config.rodName == "" then
+            Window:Notify({ Title = "Fisch Notification", Description = "Invalid Rod Name!", Lifetime = 5 })
+            AutoCToggle:UpdateState(false)
+        else
+            config.Enabled = value
+            updateConfig()
+        end
+    end,
+}, "ACast")
 
 MiscLeft:Button({ Name = "Rejoin Server", 
 	Callback = function()
