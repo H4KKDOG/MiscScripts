@@ -85,13 +85,21 @@ LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
         task.wait(0.5)
         local ButtonPosition, ButtonSize = Descendant.AbsolutePosition, Descendant.AbsoluteSize
 
-        VirtualInputManager:SendMouseButtonEvent(ButtonPosition.X + ButtonSize.X, ButtonPosition.Y + ButtonSize.Y, Enum.UserInputType.MouseButton1.Value, true, game, 1)
-        VirtualInputManager:SendMouseButtonEvent(ButtonPosition.X + ButtonSize.X, ButtonPosition.Y + ButtonSize.Y, Enum.UserInputType.MouseButton1.Value, false, game, 1)
+        -- Assuming the button is a perfect circle
+        local radius = ButtonSize.X / 2
+
+        -- Calculate the click position towards the bottom right within the circular area
+        local ClickPositionX = ButtonPosition.X + ButtonSize.X - radius * 0.5  -- Adjust slightly inside the edge
+        local ClickPositionY = ButtonPosition.Y + ButtonSize.Y - radius * 0.5  -- Adjust slightly inside the edge
+
+        -- Send mouse button events to the calculated position
+        VirtualInputManager:SendMouseButtonEvent(ClickPositionX, ClickPositionY, Enum.UserInputType.MouseButton1.Value, true, game, 1)
+        VirtualInputManager:SendMouseButtonEvent(ClickPositionX, ClickPositionY, Enum.UserInputType.MouseButton1.Value, false, game, 1)
     elseif Descendant.Name == 'playerbar' and Descendant.Parent.Name == 'bar' then
         Finished = true
 
-		local randomChance = math.random(1, 10)
-		local Perfect = randomChance <= 3
+        local randomChance = math.random(1, 10)
+        local Perfect = randomChance <= 3
 
         if Finished then
             task.wait(5.0)
