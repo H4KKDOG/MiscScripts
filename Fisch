@@ -127,8 +127,8 @@ coroutine.wrap(function()
                     Character:FindFirstChild(config.rodName).events.reset:FireServer()
                     Character:FindFirstChild(config.rodName).events.cast:FireServer(100.5)
 
-                    local bobberCheckDuration = 9.9
-                    local checkInterval = 10.0
+                    local bobberCheckDuration = 4.9
+                    local checkInterval = 5.0
                     local timeElapsed = 0
 
                     while timeElapsed < bobberCheckDuration do
