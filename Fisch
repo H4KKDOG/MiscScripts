@@ -84,8 +84,8 @@ LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
         task.wait(0.5)
         local ButtonPosition, ButtonSize = Descendant.AbsolutePosition, Descendant.AbsoluteSize
 
-        VirtualInputManager:SendMouseButtonEvent(ButtonPosition.X + (ButtonSize.X / 2), ButtonPosition.Y + (ButtonSize.Y / 2), Enum.UserInputType.MouseButton1.Value, true, LocalPlayer.PlayerGui, 1)
-        VirtualInputManager:SendMouseButtonEvent(ButtonPosition.X + (ButtonSize.X / 2), ButtonPosition.Y + (ButtonSize.Y / 2), Enum.UserInputType.MouseButton1.Value, false, LocalPlayer.PlayerGui, 1)
+        VirtualInputManager:SendMouseButtonEvent(ButtonPosition.X + (ButtonSize.X / 2), ButtonPosition.Y + (ButtonSize.Y / 2), Enum.UserInputType.MouseButton1.Value, true, game, 1)
+        VirtualInputManager:SendMouseButtonEvent(ButtonPosition.X + (ButtonSize.X / 2), ButtonPosition.Y + (ButtonSize.Y / 2), Enum.UserInputType.MouseButton1.Value, false, game, 1)
     elseif Descendant.Name == 'playerbar' and Descendant.Parent.Name == 'bar' then
         Finished = true
 
@@ -188,7 +188,7 @@ MiscRight:Button({ Name = "Get Current Pos",
 --// MiscLeft
 MiscLeft:Input({
 	Name = "Rod Name",
-	Placeholder = "Rod",
+	Placeholder = config.rodName,
 	AcceptedCharacters = "Alphabetic",
 	Callback = function(input)
 		config.rodName = input
@@ -199,7 +199,7 @@ MiscLeft:Input({
 
 local AutoCToggle = MiscLeft:Toggle({
     Name = "Auto Cast",
-    Default = false,
+    Default = config.Enabled,
     Callback = function(value)
         if config.rodName == nil or config.rodName == "" then
             Window:Notify({ Title = "Fisch Notification", Description = "Invalid Rod Name!", Lifetime = 5 })
