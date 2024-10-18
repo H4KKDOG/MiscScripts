@@ -8,10 +8,10 @@ local VirtualInputManager = game:GetService('VirtualInputManager')
 local LocalPlayer = Players.LocalPlayer
 
 local Enabled = true
-local Rod = false
 local Casted = false
 local Progress = false
 local Finished = false
+local Rod = nil
 
 local Keybind = Enum.KeyCode.F
 
@@ -48,18 +48,6 @@ function ToggleFarm(Name, State, Input)
     end
 end
 
-LocalPlayer.Character.ChildAdded:Connect(function(Child)
-    if Child:IsA('Tool') and Child.Name:lower():find('rod') then
-        Rod = Child
-    end
-end)
-
-LocalPlayer.Character.ChildRemoved:Connect(function(Child)
-    if Child == Rod then
-        Rod = nil
-    end
-end)
-
 LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
     if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
         task.wait(0.5)
@@ -71,10 +59,8 @@ LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
         Finished = true
 
         if Finished then
-            repeat
-                ReplicatedStorage.events.reelfinished:FireServer(100, true)
-                task.wait(2.5)
-            until not Finished
+            task.wait(5.0)
+            ReplicatedStorage.events.reelfinished:FireServer(100, true)
         end
     end
 end)
@@ -84,6 +70,20 @@ LocalPlayer.PlayerGui.DescendantRemoving:Connect(function(Descendant)
         Finished = false
         Progress = false
         workspace.world.npcs['Marc Merchant'].merchant.sellall:InvokeServer()
+    end
+end)
+
+LocalPlayer.Character.ChildAdded:Connect(function(Child)
+    task.wait(0.25)
+    if Child:IsA('Tool') and Child.Name:lower():find('rod') then
+        Rod = Child
+    end
+end)
+
+LocalPlayer.Character.ChildRemoved:Connect(function(Child)
+    task.wait(0.25)
+    if Child == Rod then
+        Rod = nil
     end
 end)
 
@@ -105,12 +105,6 @@ coroutine.wrap(function()
         task.wait()
     end
 end)()
-
-local NewRod = LocalPlayer.Character:FindFirstChildWhichIsA('Tool')
-
-if NewRod and NewRod.Name:lower():find('rod') then
-    Rod = NewRod
-end
 
 if UserInputService.KeyboardEnabled and not UserInputService.TouchEnabled then
     local WindowAFK
