@@ -158,6 +158,22 @@ coroutine.wrap(function()
     end
 end)()
 
+--// Bobber Check
+coroutine.wrap(function()
+    while task.wait() do
+        task.wait(60)
+        
+        local playerWorkspace = workspace:FindFirstChild(playerName)
+        if playerWorkspace and playerWorkspace:FindFirstChild(config.rodName) then
+            local nRod = playerWorkspace[config.rodName]
+
+            -- If the bobber is found, notify
+            if not nRod:FindFirstChild("bobber") then
+		Progress = false
+            end
+        end
+    end
+end)()
 
 --// GUI
 local TabGroup = Window:TabGroup()
