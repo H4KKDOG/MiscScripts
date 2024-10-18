@@ -88,8 +88,8 @@ LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
     elseif Descendant.Name == 'playerbar' and Descendant.Parent.Name == 'bar' then
         Finished = true
 
-		local randomChance = math.random(1, 100)
-		local Perfect = randomChance <= 30
+		local randomChance = math.random(1, 10)
+		local Perfect = randomChance <= 3
 
         if Finished then
             task.wait(5.0)
