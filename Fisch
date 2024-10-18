@@ -123,7 +123,7 @@ coroutine.wrap(function()
                     task.wait(0.25)
                     VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, game, 1)
 
-                    wait(0.05)
+                    wait()
                     Character:FindFirstChild(config.rodName).events.reset:FireServer()
                     Character:FindFirstChild(config.rodName).events.cast:FireServer(100.5)
 
