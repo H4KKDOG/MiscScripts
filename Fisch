@@ -99,7 +99,7 @@ LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
         Finished = true
 
         local randomChance = math.random(1, 10)
-        local Perfect = randomChance <= 3
+        local Perfect = randomChance <= 5
 
         if Finished then
             task.wait(5.0)
