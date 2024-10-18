@@ -1,27 +1,35 @@
+local MacLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/biggaboy212/Public-Resources/main/MacLib/maclib.lua"))()
+local Window = MacLib:Window({
+    Title = "Fisch GUI",
+    Subtitle = "Shiro | V0.1.3",
+    Size = UDim2.fromOffset(750, 500),
+    DragStyle = 1,
+    DisabledWindowControls = {"Exit", "Minimize"},
+    ShowUserInfo = true,
+    Keybind = Enum.KeyCode.LeftControl,
+    AcrylicBlur = true,
+})
+
 local Players = game:GetService('Players')
 local CoreGui = game:GetService('StarterGui')
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local ContextActionService = game:GetService('ContextActionService')
 local UserInputService = game:GetService("UserInputService")
 local VirtualInputManager = game:GetService('VirtualInputManager')
+local TeleportService = game:GetService("TeleportService")
 
 local LocalPlayer = Players.LocalPlayer
+local playerName = LocalPlayer.Name
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 
-local Enabled = true
+local Enabled = false
+local AutoCastLoop = true
 local Casted = false
 local Progress = false
 local Finished = false
-local Rod = nil
 
-local Keybind = Enum.KeyCode.F
-
-function ShowNotification(String)
-    CoreGui:SetCore('SendNotification', {
-        Title = 'Notification',
-        Text = String,
-        Duration = 5
-    })
-end
+local rodName = "Carbon Rod"
 
 function replaceAFKEvent()
     local AFK = ReplicatedStorage:FindFirstChild("events"):FindFirstChild("afk")
@@ -31,23 +39,12 @@ function replaceAFKEvent()
         FakeAFK.Name = "afk"
         FakeAFK.Parent = ReplicatedStorage:FindFirstChild("events")
         
-        print("AntiAFK")
+        Window:Notify({ Title = "Fisch Notification", Description = "AntiAFK", Lifetime = 5 })
         AFK:Destroy()
     end
 end
 
-function ToggleFarm(Name, State, Input)
-    if State == Enum.UserInputState.Begin then
-        Enabled = not Enabled
-       
-        if not Enabled and Rod then
-            Rod.events.reset:FireServer()
-        end
-       
-        ShowNotification(`Status: {Enabled}`)
-    end
-end
-
+--// Reel / Shake
 LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
     if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
         task.wait(0.5)
@@ -60,7 +57,7 @@ LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
 
         if Finished then
             task.wait(5.0)
-            ReplicatedStorage.events.reelfinished:FireServer(100, true)
+            ReplicatedStorage.events.reelfinished:FireServer(100, false)
         end
     end
 end)
@@ -68,57 +65,149 @@ end)
 LocalPlayer.PlayerGui.DescendantRemoving:Connect(function(Descendant)
     if Descendant.Name == 'reel' then
         Finished = false
-        Progress = false
         workspace.world.npcs['Marc Merchant'].merchant.sellall:InvokeServer()
+		Progress = false
     end
 end)
 
-LocalPlayer.Character.ChildAdded:Connect(function(Child)
-    task.wait(0.25)
-    if Child:IsA('Tool') and Child.Name:lower():find('rod') then
-        Rod = Child
-    end
-end)
-
-LocalPlayer.Character.ChildRemoved:Connect(function(Child)
-    task.wait(0.25)
-    if Child == Rod then
-        Rod = nil
-    end
-end)
-
+--// Cast
 coroutine.wrap(function()
-    while true do
+    while AutoCastLoop do
         if Enabled and not Progress then
-            if Rod then
-                Progress = true
-                task.wait(3.5)
-                VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, true, LocalPlayer.PlayerGui, 1)
-                task.wait(0.25)
-                VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, LocalPlayer.PlayerGui, 1)
-                wait()
-                Rod.events.reset:FireServer()
-                Rod.events.cast:FireServer(100.5)
+            local playerWorkspace = workspace:FindFirstChild(playerName)
+            if playerWorkspace and playerWorkspace:FindFirstChild(rodName) then
+                local nRod = playerWorkspace[rodName]
+				Progress = true
+				task.wait(3.0)
+
+                VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, true, game, 1)
+                task.wait(0.2)
+                VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, game, 1)
+				wait()
+				Character:FindFirstChild(rodName).events.reset:FireServer()
+                Character:FindFirstChild(rodName).events.cast:FireServer(100)
+                
+                task.wait(1.0)
+                if not nRod:FindFirstChild("bobber") then
+                    Progress = false
+                end
+            else
+                Progress = false
             end
+			
+			task.wait()
         end
 
         task.wait()
     end
 end)()
 
+--// GUI
+local TabGroup = Window:TabGroup()
+local Teleport = TabGroup:Tab({ Name = "Teleport" })
+local Misc = TabGroup:Tab({ Name = "Spot" })
+
+local TPLeft = Teleport:Section({ Side = "Left" })
+local TPRight = Teleport:Section({ Side = "Right" })
+
+local MiscLeft = Misc:Section({ Side = "Left" })
+local MiscRight = Misc:Section({ Side = "Right" })
+
+TPLeft:Header({ Name = "Island" })
+TPRight:Header({ Name = "Spot" })
+
+MiscLeft:Header({ Name = "ExtraFunc" })
+MiscRight:Header({ Name = "Debugging" })
+
+--// MiscRight
+MiscRight:Button({ Name = "Get Current Pos", 
+	Callback = function()
+		local position = HumanoidRootPart.Position
+		local clipboardContent = "{ \"LocationName\", Vector3.new(" .. position.X .. ", " .. position.Y .. ", " .. position.Z .. ") },"
+		setclipboard(clipboardContent)
+	end,
+})
+
+--// MiscLeft
+local AutoC = MiscLeft:Keybind({
+	Name = "AutoCast",
+	Callback = function()
+		Enabled = not Enabled
+
+		Window:Notify({ Title = "Fisch Notification", Description = `AutoCast : {Enabled}`, Lifetime = 5 })
+	end,
+	onBinded = function(bind)
+		Window:Notify({ Title = "Fisch Notification", Description = "KeyBind : "..tostring(bind.Name), Lifetime = 5 })
+	end,
+})
+
+AutoC:Bind(Enum.KeyCode.F)
+
+MiscLeft:Button({ Name = "Rejoin Server", 
+	Callback = function()
+		TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, player)
+	end,
+})
+
+MiscLeft:Button({ Name = "Server Hop", 
+	Callback = function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/MiscScripts/refs/heads/main/ServerHop"))()
+	end,
+})
+
+--// TPLeft
+local locations = {
+    { "Moosewood", Vector3.new(383.060546875, 134.50001525878906, 267.64471435546875) },
+    { "Roslit Hamlet", Vector3.new(-1442.3291015625, 133, 726.9091796875) },
+    { "Terrapin Island", Vector3.new(-192.4793243408203, 135.2742919921875, 1953.1597900390625) },
+    { "Statue Of Sovereignty", Vector3.new(31.58206558227539, 144.49334716796875, -1021.61083984375) },
+    { "Snowcap Island", Vector3.new(2620.824951171875, 139.7838592529297, 2423.62890625) },
+    { "The Arc", Vector3.new(998.9711303710938, 131.3202362060547, -1237.1431884765625) },
+    { "Keepers Altar", Vector3.new(1296.32080078125, -805.292236328125, -298.93817138671875) },
+    { "Harvester Spike", Vector3.new(-1254.696044921875, 137.56063842773438, 1554.47119140625) },
+    { "Mushgrove Swamp", Vector3.new(2441.1611328125, 130.904052734375, -683.6802368164062) },
+    { "Vertigo", Vector3.new(-95.83425903320312, -513.2993774414062, 1116.5545654296875) }
+}
+
+for _, location in ipairs(locations) do
+	TPLeft:Button({ Name = location[1], 
+		Callback = function()
+			HumanoidRootPart.CFrame = CFrame.new(location[2])
+		end,
+	})
+end
+
+--// TPRight
+local fishingSpots = {
+	{ "Sunstone (Common Crate)", Vector3.new(-1149.08508, 134.49998, -1055.80151) },
+	{ "Vertigo (Small Stone)", Vector3.new(-107.99476623535156, -731.946533203125, 1207.8134765625) },
+    { "Moosewood (Small Island)", Vector3.new(229.60299682617188, 139.34976196289062, 43.50540542602539) },
+    { "Snowcap (Cave)", Vector3.new(2805.062744140625, 131.85032653808594, 2712.624267578125) }
+}
+
+for _, location in ipairs(fishingSpots) do
+	TPRight:Button({ Name = location[1], 
+		Callback = function()
+			HumanoidRootPart.CFrame = CFrame.new(location[2])
+		end,
+	})
+end
+
 if UserInputService.KeyboardEnabled and not UserInputService.TouchEnabled then
+
     local WindowAFK
     WindowAFK = UserInputService.WindowFocused:Connect(function()
         replaceAFKEvent()
         WindowAFK:Disconnect()
     end)
 
-    ShowNotification("Fisch Simple Script.")
+	Window:SetState(false)
+	Window:Notify({ Title = "Fisch Notification", Description = "Loaded!", Lifetime = 5 })
 elseif UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
+
     replaceAFKEvent()
-    ShowNotification("Fisch Simple Script.")
+	Window:GetSize()
+	Window:Notify({ Title = "Fisch Notification", Description = "Loaded!", Lifetime = 5 })
 end
 
-ContextActionService:BindAction('ToggleFarm', ToggleFarm, false, Keybind)
-ShowNotification(`Press : ' {Keybind.Name} ' to ToggleFarm`)
-ShowNotification(`Farm Status: {Enabled}`)
+Teleport:Select()
