@@ -188,6 +188,7 @@ MiscLeft:Input({
 	AcceptedCharacters = "Alphabetic",
 	Callback = function(input)
 		config.rodName = input
+        Window:Notify({ Title = "Fisch Notification", Description = "Rod :"..input, Lifetime = 5 })
         updateConfig()
 	end,
 }, "RodN")
