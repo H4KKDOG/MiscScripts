@@ -80,31 +80,37 @@ coroutine.wrap(function()
             local playerWorkspace = workspace:FindFirstChild(playerName)
             if playerWorkspace and playerWorkspace:FindFirstChild(rodName) then
                 local nRod = playerWorkspace[rodName]
-                Progress = true
-                task.wait(3.0)
-
-                VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, true, game, 1)
-                task.wait(0.25)
-                VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, game, 1)
-
-                wait()
-                nRod.events.reset:FireServer()
-                nRod.events.cast:FireServer(100.5)
-                Window:Notify({ Title = "Fisch Notification", Description = "AutoCast", Lifetime = 5 })
-
-                local bobberCheckDuration = 10.1
-                local checkInterval = 5.0
-                local timeElapsed = 0
-
-                while timeElapsed < bobberCheckDuration do
-                    task.wait(checkInterval)
-                    if nRod:FindFirstChild("bobber") then
-                        break
-                    end
-                    timeElapsed = timeElapsed + checkInterval
-                end
 
                 if not nRod:FindFirstChild("bobber") then
+                    Progress = true
+                    task.wait(3.0)
+
+                    VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, true, game, 1)
+                    task.wait(0.25)
+                    VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, game, 1)
+
+                    wait()
+                    Character:FindFirstChild(rodName).events.reset:FireServer()
+                    Character:FindFirstChild(rodName).events.cast:FireServer(100.5)
+
+                    local bobberCheckDuration = 9.9
+                    local checkInterval = 10.0
+                    local timeElapsed = 0
+
+                    while timeElapsed < bobberCheckDuration do
+                        task.wait(checkInterval)
+                        if nRod:FindFirstChild("bobber") then
+                            break
+                        else
+                            Progress = false
+                        end
+                        timeElapsed = timeElapsed + checkInterval
+                    end
+
+                    if not nRod:FindFirstChild("bobber") then
+                        Progress = false
+                    end
+                else
                     Progress = false
                 end
             else
@@ -117,6 +123,7 @@ coroutine.wrap(function()
         task.wait()
     end
 end)()
+
 
 --// GUI
 local TabGroup = Window:TabGroup()
@@ -222,7 +229,6 @@ if UserInputService.KeyboardEnabled and not UserInputService.TouchEnabled then
 elseif UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
 
     replaceAFKEvent()
-	Window:GetSize()
 	Window:Notify({ Title = "Fisch Notification", Description = "Loaded!", Lifetime = 5 })
 end
 
