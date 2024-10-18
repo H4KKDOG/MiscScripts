@@ -85,8 +85,8 @@ LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
         task.wait(0.5)
         local ButtonPosition, ButtonSize = Descendant.AbsolutePosition, Descendant.AbsoluteSize
 
-        VirtualInputManager:SendMouseButtonEvent(ButtonPosition.X + (ButtonSize.X / 2), ButtonPosition.Y + (ButtonSize.Y / 2), Enum.UserInputType.MouseButton1.Value, true, game, 1)
-        VirtualInputManager:SendMouseButtonEvent(ButtonPosition.X + (ButtonSize.X / 2), ButtonPosition.Y + (ButtonSize.Y / 2), Enum.UserInputType.MouseButton1.Value, false, game, 1)
+        VirtualInputManager:SendMouseButtonEvent(ButtonPosition.X + ButtonSize.X, ButtonPosition.Y + ButtonSize.Y, Enum.UserInputType.MouseButton1.Value, true, game, 1)
+        VirtualInputManager:SendMouseButtonEvent(ButtonPosition.X + ButtonSize.X, ButtonPosition.Y + ButtonSize.Y, Enum.UserInputType.MouseButton1.Value, false, game, 1)
     elseif Descendant.Name == 'playerbar' and Descendant.Parent.Name == 'bar' then
         Finished = true
 
