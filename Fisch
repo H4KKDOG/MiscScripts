@@ -123,7 +123,7 @@ spawn(function()
             if playerWorkspace and playerWorkspace:FindFirstChild(config.rodName) then
                 local nRod = playerWorkspace[config.rodName]
 
-                if not nRod:FindFirstChild("bobber") then
+                if playerWorkspace:FindFirstChild(config.rodName) and not nRod:FindFirstChild("bobber") then
                     Progress = true
                     task.wait(2.5)
 
