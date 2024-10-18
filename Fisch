@@ -73,7 +73,7 @@ function replaceAFKEvent()
         local FakeAFK = Instance.new("RemoteEvent")
         FakeAFK.Name = "afk"
         FakeAFK.Parent = ReplicatedStorage:FindFirstChild("events")
-        
+
         Window:Notify({ Title = "Fisch Notification", Description = "AntiAFK", Lifetime = 5 })
         AFK:Destroy()
     end
@@ -109,73 +109,73 @@ LocalPlayer.PlayerGui.DescendantRemoving:Connect(function(Descendant)
     if Descendant.Name == 'reel' then
         Finished = false
         workspace.world.npcs['Marc Merchant'].merchant.sellall:InvokeServer()
-		Progress = false
+        Progress = false
     end
 end)
 
 --// Cast
 coroutine.wrap(function()
-	while task.wait() do
-		if config.Enabled and not Progress then
-			local playerWorkspace = workspace:FindFirstChild(playerName)
-			if playerWorkspace and playerWorkspace:FindFirstChild(config.rodName) then
-				local nRod = playerWorkspace[config.rodName]
+    while task.wait() do
+        if config.Enabled and not Progress then
+            local playerWorkspace = workspace:FindFirstChild(playerName)
+            if playerWorkspace and playerWorkspace:FindFirstChild(config.rodName) then
+                local nRod = playerWorkspace[config.rodName]
 
-				if not nRod:FindFirstChild("bobber") then
-					Progress = true
-					task.wait(3.0)
+                if not nRod:FindFirstChild("bobber") then
+                    Progress = true
+                    task.wait(3.0)
 
-					VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, true, game, 1)
-					task.wait(0.25)
-					VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, game, 1)
+                    VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, true, game, 1)
+                    task.wait(0.25)
+                    VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, game, 1)
 
-					wait(0.01)
-					if nRod:FindFirstChild("events") then
-						Character:FindFirstChild(config.rodName).events.reset:FireServer()
-						Character:FindFirstChild(config.rodName).events.cast:FireServer(100.5)
-					end
+                    wait(0.01)
+                    if nRod:FindFirstChild("events") then
+                        Character:FindFirstChild(config.rodName).events.reset:FireServer()
+                        Character:FindFirstChild(config.rodName).events.cast:FireServer(100.5)
+                    end
 
-					local bobberCheckDuration = 4.9
-					local checkInterval = 5.0
-					local timeElapsed = 0
+                    local bobberCheckDuration = 4.9
+                    local checkInterval = 5.0
+                    local timeElapsed = 0
 
-					while timeElapsed < bobberCheckDuration do
-						task.wait(checkInterval)
-						if nRod:FindFirstChild("bobber") then
-							break
-						else
-							Progress = false
-						end
-						timeElapsed = timeElapsed + checkInterval
-					end
+                    while timeElapsed < bobberCheckDuration do
+                        task.wait(checkInterval)
+                        if nRod:FindFirstChild("bobber") then
+                            break
+                        else
+                            Progress = false
+                        end
+                        timeElapsed = timeElapsed + checkInterval
+                    end
 
-					if not nRod:FindFirstChild("bobber") then
-						Progress = false
-					end
-				else
-					Progress = false
-				end
-			else
-				Progress = false
-			end
-		end
-	end
+                    if not nRod:FindFirstChild("bobber") then
+                        Progress = false
+                    end
+                else
+                    Progress = false
+                end
+            else
+                Progress = false
+            end
+        end
+    end
 end)()
 
 --// Bobber Check
 coroutine.wrap(function()
-	while task.wait() do
-    task.wait(30)
+    while task.wait() do
+        task.wait(30)
 
-		local playerWorkspace = workspace:FindFirstChild(playerName)
-		if playerWorkspace and playerWorkspace:FindFirstChild(config.rodName) then
-			local nRod = playerWorkspace[config.rodName]
+        local playerWorkspace = workspace:FindFirstChild(playerName)
+        if playerWorkspace and playerWorkspace:FindFirstChild(config.rodName) then
+            local nRod = playerWorkspace[config.rodName]
 
-			if not nRod:FindFirstChild("bobber") then
-				Progress = false
-			end
-		end
-	end
+            if not nRod:FindFirstChild("bobber") then
+                Progress = false
+            end
+        end
+    end
 end)()
 
 --// GUI
@@ -196,30 +196,30 @@ MiscLeft:Header({ Name = "ExtraFunc" })
 MiscRight:Header({ Name = "Debugging" })
 
 --// MiscRight
-MiscRight:Button({ Name = "Get Current Pos", 
-	Callback = function()
-		local position = HumanoidRootPart.Position
-		local clipboardContent = "{ \"LocationName\", Vector3.new(" .. position.X .. ", " .. position.Y .. ", " .. position.Z .. ") },"
-		setclipboard(clipboardContent)
-	end,
+MiscRight:Button({ Name = "Get Current Pos",
+    Callback = function()
+        local position = HumanoidRootPart.Position
+        local clipboardContent = "{ \"LocationName\", Vector3.new(" .. position.X .. ", " .. position.Y .. ", " .. position.Z .. ") },"
+        setclipboard(clipboardContent)
+    end,
 })
 
 --// MiscLeft
 local RodInput = MiscLeft:Input({
-	Name = "Rod Name",
-	Placeholder = config.rodName,
-	AcceptedCharacters = "Alphabetic",
-	Callback = function(input)
-		if input == nil or input == "" then
-			RodInput:UpdatePlaceholder(config.rodName)
-			RodInput:UpdatePlaceholder(config.rodName)
-			Window:Notify({ Title = "Fisch Notification", Description = "Invalid Rod Name!", Lifetime = 5 })
-		else
-			config.rodName = input
-			updateConfig()
-			Window:Notify({ Title = "Fisch Notification", Description = "Rod : "..input, Lifetime = 5 })
-		end
-	end,
+    Name = "Rod Name",
+    Placeholder = config.rodName,
+    AcceptedCharacters = "Alphabetic",
+    Callback = function(input)
+        if input == nil or input == "" then
+            RodInput:UpdatePlaceholder(config.rodName)
+            RodInput:UpdatePlaceholder(config.rodName)
+            Window:Notify({ Title = "Fisch Notification", Description = "Invalid Rod Name!", Lifetime = 5 })
+        else
+            config.rodName = input
+            updateConfig()
+            Window:Notify({ Title = "Fisch Notification", Description = "Rod : "..input, Lifetime = 5 })
+        end
+    end,
 }, "RodN")
 
 local AutoCToggle = MiscLeft:Toggle({
@@ -236,16 +236,16 @@ local AutoCToggle = MiscLeft:Toggle({
     end,
 }, "ACast")
 
-MiscLeft:Button({ Name = "Rejoin Server", 
-	Callback = function()
-		TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, player)
-	end,
+MiscLeft:Button({ Name = "Rejoin Server",
+    Callback = function()
+        TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, player)
+    end,
 })
 
-MiscLeft:Button({ Name = "Server Hop", 
-	Callback = function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/MiscScripts/refs/heads/main/ServerHop"))()
-	end,
+MiscLeft:Button({ Name = "Server Hop",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/MiscScripts/refs/heads/main/ServerHop"))()
+    end,
 })
 
 --// TPLeft
@@ -263,27 +263,27 @@ local locations = {
 }
 
 for _, location in ipairs(locations) do
-	TPLeft:Button({ Name = location[1], 
-		Callback = function()
-			HumanoidRootPart.CFrame = CFrame.new(location[2])
-		end,
-	})
+    TPLeft:Button({ Name = location[1],
+        Callback = function()
+            HumanoidRootPart.CFrame = CFrame.new(location[2])
+        end,
+    })
 end
 
 --// TPRight
 local fishingSpots = {
-	{ "Sunstone (Common Crate)", Vector3.new(-1149.08508, 134.49998, -1055.80151) },
-	{ "Vertigo (Small Stone)", Vector3.new(-107.99476623535156, -731.946533203125, 1207.8134765625) },
+    { "Sunstone (Common Crate)", Vector3.new(-1149.08508, 134.49998, -1055.80151) },
+    { "Vertigo (Small Stone)", Vector3.new(-107.99476623535156, -731.946533203125, 1207.8134765625) },
     { "Moosewood (Small Island)", Vector3.new(229.60299682617188, 139.34976196289062, 43.50540542602539) },
     { "Snowcap (Cave)", Vector3.new(2805.062744140625, 131.85032653808594, 2712.624267578125) }
 }
 
 for _, location in ipairs(fishingSpots) do
-	TPRight:Button({ Name = location[1], 
-		Callback = function()
-			HumanoidRootPart.CFrame = CFrame.new(location[2])
-		end,
-	})
+    TPRight:Button({ Name = location[1],
+        Callback = function()
+            HumanoidRootPart.CFrame = CFrame.new(location[2])
+        end,
+    })
 end
 
 if UserInputService.KeyboardEnabled and not UserInputService.TouchEnabled then
@@ -294,12 +294,12 @@ if UserInputService.KeyboardEnabled and not UserInputService.TouchEnabled then
         WindowAFK:Disconnect()
     end)
 
-	Window:SetState(false)
-	Window:Notify({ Title = "Fisch Notification", Description = "Loaded!", Lifetime = 5 })
+    Window:SetState(false)
+    Window:Notify({ Title = "Fisch Notification", Description = "Loaded!", Lifetime = 5 })
 elseif UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
 
     replaceAFKEvent()
-	Window:Notify({ Title = "Fisch Notification", Description = "Loaded!", Lifetime = 5 })
+    Window:Notify({ Title = "Fisch Notification", Description = "Loaded!", Lifetime = 5 })
 end
 
 Teleport:Select()
