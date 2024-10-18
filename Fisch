@@ -1,7 +1,7 @@
 local MacLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/biggaboy212/Public-Resources/main/MacLib/maclib.lua"))()
 local Window = MacLib:Window({
     Title = "Fisch GUI",
-    Subtitle = "Shiro | V0.1.4",
+    Subtitle = "Shiro | V0.1.41",
     Size = UDim2.fromOffset(750, 500),
     DragStyle = 1,
     DisabledWindowControls = {"Exit", "Minimize"},
@@ -89,7 +89,7 @@ coroutine.wrap(function()
                     task.wait(0.25)
                     VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, game, 1)
 
-                    wait()
+                    wait(0.05)
                     Character:FindFirstChild(rodName).events.reset:FireServer()
                     Character:FindFirstChild(rodName).events.cast:FireServer(100.5)
 
