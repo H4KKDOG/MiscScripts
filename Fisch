@@ -20,6 +20,7 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local ContextActionService = game:GetService('ContextActionService')
 local HttpService = game:GetService("HttpService")
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 local VirtualInputManager = game:GetService('VirtualInputManager')
 local TeleportService = game:GetService("TeleportService")
 
@@ -28,8 +29,6 @@ local playerName = LocalPlayer.Name
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 
-local AutoCastLoop = true
-local Casted = false
 local Progress = false
 local Finished = false
 
@@ -108,72 +107,63 @@ LocalPlayer.PlayerGui.DescendantRemoving:Connect(function(Descendant)
 end)
 
 --// Cast
-coroutine.wrap(function()
-    while AutoCastLoop do
-        if config.Enabled and not Progress then
-            local playerWorkspace = workspace:FindFirstChild(playerName)
-            if playerWorkspace and playerWorkspace:FindFirstChild(config.rodName) then
-                local nRod = playerWorkspace[config.rodName]
+RunService.Heartbeat:Connect(function()
+    if config.Enabled and not Progress then
+        local playerWorkspace = workspace:FindFirstChild(playerName)
+        if playerWorkspace and playerWorkspace:FindFirstChild(config.rodName) then
+            local nRod = playerWorkspace[config.rodName]
 
-                if not nRod:FindFirstChild("bobber") then
-                    Progress = true
-                    task.wait(3.0)
+            if not nRod:FindFirstChild("bobber") then
+                Progress = true
+                task.wait(3.0)
 
-                    VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, true, game, 1)
-                    task.wait(0.25)
-                    VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, game, 1)
+                VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, true, game, 1)
+                task.wait(0.25)
+                VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, game, 1)
 
-                    wait()
-                    Character:FindFirstChild(config.rodName).events.reset:FireServer()
-                    Character:FindFirstChild(config.rodName).events.cast:FireServer(100.5)
+                wait(0.05)
+                Character:FindFirstChild(config.rodName).events.reset:FireServer()
+                Character:FindFirstChild(config.rodName).events.cast:FireServer(100.5)
 
-                    local bobberCheckDuration = 4.9
-                    local checkInterval = 5.0
-                    local timeElapsed = 0
+                local bobberCheckDuration = 4.9
+                local checkInterval = 5.0
+                local timeElapsed = 0
 
-                    while timeElapsed < bobberCheckDuration do
-                        task.wait(checkInterval)
-                        if nRod:FindFirstChild("bobber") then
-                            break
-                        else
-                            Progress = false
-                        end
-                        timeElapsed = timeElapsed + checkInterval
-                    end
-
-                    if not nRod:FindFirstChild("bobber") then
+                while timeElapsed < bobberCheckDuration do
+                    task.wait(checkInterval)
+                    if nRod:FindFirstChild("bobber") then
+                        break
+                    else
                         Progress = false
                     end
-                else
+                    timeElapsed = timeElapsed + checkInterval
+                end
+
+                if not nRod:FindFirstChild("bobber") then
                     Progress = false
                 end
             else
                 Progress = false
             end
-
-            task.wait()
+        else
+            Progress = false
         end
-
-        task.wait()
     end
-end)()
+end)
 
 --// Bobber Check
-coroutine.wrap(function()
-    while task.wait() do
-        task.wait(60)
-        
-        local playerWorkspace = workspace:FindFirstChild(playerName)
-        if playerWorkspace and playerWorkspace:FindFirstChild(config.rodName) then
-            local nRod = playerWorkspace[config.rodName]
+RunService.Heartbeat:Connect(function()
+    task.wait(30)
 
-            -- If the bobber is found, notify
-            if not nRod:FindFirstChild("bobber") then
-		Progress = false
-            end
+    local playerWorkspace = workspace:FindFirstChild(playerName)
+    if playerWorkspace and playerWorkspace:FindFirstChild(config.rodName) then
+        local nRod = playerWorkspace[config.rodName]
+
+        if not nRod:FindFirstChild("bobber") then
+            Progress = false
         end
     end
-end)()
+end)
 
 --// GUI
 local TabGroup = Window:TabGroup()
