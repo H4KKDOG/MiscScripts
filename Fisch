@@ -85,7 +85,7 @@ coroutine.wrap(function()
                 VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, game, 1)
 				wait()
 				Character:FindFirstChild(rodName).events.reset:FireServer()
-                Character:FindFirstChild(rodName).events.cast:FireServer(100)
+                Character:FindFirstChild(rodName).events.cast:FireServer(100.5)
                 
                 task.wait(1.0)
                 if not nRod:FindFirstChild("bobber") then
