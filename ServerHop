@@ -15,7 +15,7 @@ local Server, Next; repeat
    Next = Servers.nextPageCursor
 until Server
 
-while task.wait() do
+while true do
    TPS:TeleportToPlaceInstance(_place,Server.id,game.Players.LocalPlayer)
    task.wait(5)
 end
