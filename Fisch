@@ -85,14 +85,11 @@ LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
         task.wait(0.5)
         local ButtonPosition, ButtonSize = Descendant.AbsolutePosition, Descendant.AbsoluteSize
 
-        -- Assuming the button is a perfect circle
         local radius = ButtonSize.X / 2
 
-        -- Calculate the click position towards the bottom right within the circular area
-        local ClickPositionX = ButtonPosition.X + ButtonSize.X - radius * 0.75  -- Adjust slightly inside the edge
-        local ClickPositionY = ButtonPosition.Y + ButtonSize.Y - radius * 0.75  -- Adjust slightly inside the edge
+        local ClickPositionX = ButtonPosition.X + ButtonSize.X - radius * 0.75
+        local ClickPositionY = ButtonPosition.Y + ButtonSize.Y - radius * 0.75
 
-        -- Send mouse button events to the calculated position
         VirtualInputManager:SendMouseButtonEvent(ClickPositionX, ClickPositionY, Enum.UserInputType.MouseButton1.Value, true, game, 1)
         VirtualInputManager:SendMouseButtonEvent(ClickPositionX, ClickPositionY, Enum.UserInputType.MouseButton1.Value, false, game, 1)
     elseif Descendant.Name == 'playerbar' and Descendant.Parent.Name == 'bar' then
@@ -133,8 +130,10 @@ coroutine.wrap(function()
 					VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, game, 1)
 
 					wait(0.01)
-					Character:FindFirstChild(config.rodName).events.reset:FireServer()
-					Character:FindFirstChild(config.rodName).events.cast:FireServer(100.5)
+					if nRod:FindFirstChild("events") then
+						Character:FindFirstChild(config.rodName).events.reset:FireServer()
+						Character:FindFirstChild(config.rodName).events.cast:FireServer(100.5)
+					end
 
 					local bobberCheckDuration = 4.9
 					local checkInterval = 5.0
