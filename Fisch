@@ -5,7 +5,7 @@ until game:IsLoaded()
 local MacLib = loadstring(game:HttpGet("https://github.com/biggaboy212/Maclib/releases/latest/download/maclib.txt"))()
 local Window = MacLib:Window({
     Title = "Fisch GUI",
-    Subtitle = "Shiro | V0.1.41",
+    Subtitle = "Shiro | v0.2",
     Size = UDim2.fromOffset(750, 500),
     DragStyle = 1,
     DisabledWindowControls = {"Exit", "Minimize"},
@@ -37,7 +37,7 @@ getgenv().config = getgenv().config
 local isFirstTime = false
 local configTemplate = {
     Enabled = false,
-    rodName = "Name"
+    rodName = "RodName"
 }
 
 if not isfolder("FischConfig") then
@@ -186,14 +186,20 @@ MiscRight:Button({ Name = "Get Current Pos",
 })
 
 --// MiscLeft
-MiscLeft:Input({
+local RodInput = MiscLeft:Input({
 	Name = "Rod Name",
 	Placeholder = config.rodName,
 	AcceptedCharacters = "Alphabetic",
 	Callback = function(input)
-		config.rodName = input
-        Window:Notify({ Title = "Fisch Notification", Description = "Rod :"..input, Lifetime = 5 })
-        updateConfig()
+		if input == nil or input == "" then
+			RodInput:UpdatePlaceholder(config.rodName)
+			RodInput:UpdatePlaceholder(config.rodName)
+			Window:Notify({ Title = "Fisch Notification", Description = "Invalid Rod Name!", Lifetime = 5 })
+		else
+			config.rodName = input
+			updateConfig()
+			Window:Notify({ Title = "Fisch Notification", Description = "Rod : "..input, Lifetime = 5 })
+		end
 	end,
 }, "RodN")
 
