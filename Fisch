@@ -41,7 +41,7 @@ local isFirstTime = false
 local configTemplate = {
     Enabled = false,
     AutoSell = false,
-    SellBind = "R"
+    SellBind = "F"
 }
 
 if not isfolder("FischConfig") then
@@ -164,7 +164,7 @@ spawn(function()
                 VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, game, 1)
 
                 wait(0.01)
-                if Character:FindFirstChild(rodName) and nRod:FindFirstChild("events") then
+                if nRod and nRod:FindFirstChild("events") and nRod:FindFirstChild("bobber") then
                     Character:FindFirstChild(rodName).events.reset:FireServer()
                     Character:FindFirstChild(rodName).events.cast:FireServer(100.5)
                 end
