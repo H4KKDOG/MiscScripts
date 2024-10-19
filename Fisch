@@ -209,23 +209,29 @@ MiscRight:Button({ Name = "Get Current Pos",
     end,
 })
 
---// MiscLeft
+MiscRight:Button({ Name = "Rejoin Server",
+    Callback = function()
+        TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, player)
+    end,
+})
 
+MiscRight:Button({ Name = "Server Hop",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/MiscScripts/refs/heads/main/ServerHop"))()
+    end,
+})
+
+--// MiscLeft
 local SKeyB = MiscLeft:Keybind({
 	Name = "Sell Inventory",
-	Callback = function(binded)
-		Window:Notify({
-			Title = "Kuzu Hub",
-			Description = "Successfully Reset Inventory",
-			Lifetime = 3
-		})
+	Callback = function()
+		ReplicatedStorage.events.selleverything:InvokeServer()
+		Window:Notify({ Title = "Fisch Notification", Description = "Sell Inventory!", Lifetime = 5 })
 	end,
 	onBinded = function(bind)
-		Window:Notify({
-			Title = "Kuzu Hub",
-			Description = "Rebinded Reset Inventory to "..tostring(bind.Name),
-			Lifetime = 3
-		})
+		config.SellBind = bind
+		updateConfig()
+		Window:Notify({ Title = "Fisch Notification", Description = "Set Bind : "..bind, Lifetime = 5 })
 	end,
 }, "SellInv")
 SKeyB:Bind(config.SellBind)
@@ -261,17 +267,19 @@ local AutoCToggle = MiscLeft:Toggle({
     end,
 }, "ACast")
 
-MiscLeft:Button({ Name = "Rejoin Server",
-    Callback = function()
-        TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, player)
+local AutoCToggle = MiscLeft:Toggle({
+    Name = "Auto Cast",
+    Default = config.Enabled,
+    Callback = function(value)
+        if config.rodName == nil or config.rodName == "" then
+            Window:Notify({ Title = "Fisch Notification", Description = "Invalid Rod Name!", Lifetime = 5 })
+            AutoCToggle:UpdateState(false)
+        else
+            config.Enabled = value
+            updateConfig()
+        end
     end,
-})
-
-MiscLeft:Button({ Name = "Server Hop",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/MiscScripts/refs/heads/main/ServerHop"))()
-    end,
-})
+}, "ACast")
 
 --// TPLeft
 local locations = {
