@@ -319,7 +319,6 @@ end
 
 if UserInputService.KeyboardEnabled and not UserInputService.TouchEnabled then
     Window:SetState(false)
-    replaceAFKEvent()
     local WindowAFK
     WindowAFK = UserInputService.WindowFocused:Connect(function()
         replaceAFKEvent()
