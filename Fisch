@@ -73,7 +73,7 @@ loadConfig()
 
 function replaceAFKEvent()
     local AFK = ReplicatedStorage:FindFirstChild("events"):FindFirstChild("afk")
-    if AFK then
+    if AFK and UserInputService.WindowFocused then
         task.wait(0.75)
         local FakeAFK = Instance.new("RemoteEvent")
         FakeAFK.Name = "afk"
@@ -319,6 +319,7 @@ end
 
 if UserInputService.KeyboardEnabled and not UserInputService.TouchEnabled then
     Window:SetState(false)
+    replaceAFKEvent()
     local WindowAFK
     WindowAFK = UserInputService.WindowFocused:Connect(function()
         replaceAFKEvent()
