@@ -197,14 +197,10 @@ end)
 spawn(function()
     while task.wait() do
         task.wait(30)
+        local nRod = updateRodInWorkspace()
 
-        local playerWorkspace = workspace:FindFirstChild(playerName)
-        if playerWorkspace and playerWorkspace:FindFirstChild(rodName) then
-            local nRod = playerWorkspace[rodName]
-
-            if not nRod:FindFirstChild("bobber") then
-                Progress = false
-            end
+        if nRod and not nRod:FindFirstChild("bobber") then
+            Progress = false
         end
     end
 end)
