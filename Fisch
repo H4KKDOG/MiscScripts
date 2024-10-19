@@ -97,6 +97,18 @@ function updateRodInWorkspace()
     return nil
 end
 
+function createPlatformTP(teleportPosition)
+	local platform = Instance.new("Part")
+	platform.Size = Vector3.new(10, 1, 10)
+	platform.Position = teleportPosition - Vector3.new(0, 5, 0)
+	platform.Anchored = true
+	platform.CanCollide = true
+	platform.Transparency = 0.75
+	platform.Parent = workspace
+
+	HumanoidRootPart.CFrame = CFrame.new(teleportPosition)
+end
+
 --// Reel / Shake
 LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
     if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
@@ -316,6 +328,12 @@ for _, location in ipairs(fishingSpots) do
         end,
     })
 end
+
+TPRight:Button({ Name = "Deep Ocean (Beta)",
+    Callback = function()
+        createPlatformTP(Vector3.new(1447.85071, 139.649994, -7649.64502))
+    end,
+})
 
 if UserInputService.KeyboardEnabled and not UserInputService.TouchEnabled then
     Window:SetState(false)
