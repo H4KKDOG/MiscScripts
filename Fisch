@@ -187,8 +187,6 @@ spawn(function()
                     Character:FindFirstChild(rodName).events.reset:FireServer()
                     Character:FindFirstChild(rodName).events.cast:FireServer(100.5)
                 end
-            else
-                Progress = false
             end
         end
     end
