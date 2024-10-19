@@ -318,14 +318,10 @@ for _, location in ipairs(fishingSpots) do
 end
 
 if UserInputService.KeyboardEnabled and not UserInputService.TouchEnabled then
-
-    local WindowAFK
-    WindowAFK = UserInputService.WindowFocused:Connect(function()
-        replaceAFKEvent()
-        WindowAFK:Disconnect()
-    end)
-
     Window:SetState(false)
+    repeat task.wait() until UserInputService.WindowFocused
+
+    replaceAFKEvent()
     Window:Notify({ Title = "Fisch Notification", Description = "Loaded!", Lifetime = 5 })
 elseif UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
 
