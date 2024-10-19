@@ -1,6 +1,6 @@
 Fisch
 ```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/MiscScripts/refs/heads/main/Fisch"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/MiscScripts/refs/heads/main/Fisch", true))()
 ```
 ServerHop
 ```lua
