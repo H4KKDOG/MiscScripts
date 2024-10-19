@@ -111,7 +111,7 @@ end)
 LocalPlayer.PlayerGui.DescendantRemoving:Connect(function(Descendant)
     if Descendant.Name == 'reel' then
         Finished = false
-        workspace.world.npcs['Marc Merchant'].merchant.sellall:InvokeServer()
+        ReplicatedStorage.events.selleverything:InvokeServer()
         Progress = false
     end
 end)
