@@ -40,6 +40,7 @@ local isFirstTime = false
 local configTemplate = {
     Enabled = false,
     rodName = "RodName",
+    AutoSell = false,
     SellBind = Enum.KeyCode.R
 }
 
@@ -113,7 +114,9 @@ end)
 LocalPlayer.PlayerGui.DescendantRemoving:Connect(function(Descendant)
     if Descendant.Name == 'reel' then
         Finished = false
-        ReplicatedStorage.events.selleverything:InvokeServer()
+        if config.AutoSell then
+            ReplicatedStorage.events.selleverything:InvokeServer()
+        end
         Progress = false
     end
 end)
@@ -223,16 +226,16 @@ MiscRight:Button({ Name = "Server Hop",
 
 --// MiscLeft
 local SKeyB = MiscLeft:Keybind({
-	Name = "Sell Inventory",
-	Callback = function()
-		ReplicatedStorage.events.selleverything:InvokeServer()
-		Window:Notify({ Title = "Fisch Notification", Description = "Sell Inventory!", Lifetime = 5 })
-	end,
-	onBinded = function(bind)
-		config.SellBind = bind
-		updateConfig()
-		Window:Notify({ Title = "Fisch Notification", Description = "Set Bind : "..bind, Lifetime = 5 })
-	end,
+    Name = "Sell Inventory",
+    Callback = function()
+        ReplicatedStorage.events.selleverything:InvokeServer()
+        Window:Notify({ Title = "Fisch Notification", Description = "Sell Inventory!", Lifetime = 5 })
+    end,
+    onBinded = function(bind)
+        config.SellBind = bind
+        updateConfig()
+        Window:Notify({ Title = "Fisch Notification", Description = "Set Bind : "..bind, Lifetime = 5 })
+    end,
 }, "SellInv")
 SKeyB:Bind(config.SellBind)
 
@@ -267,19 +270,14 @@ local AutoCToggle = MiscLeft:Toggle({
     end,
 }, "ACast")
 
-local AutoCToggle = MiscLeft:Toggle({
-    Name = "Auto Cast",
-    Default = config.Enabled,
+local SellToggle = MiscLeft:Toggle({
+    Name = "Auto Sell",
+    Default = config.AutoSell,
     Callback = function(value)
-        if config.rodName == nil or config.rodName == "" then
-            Window:Notify({ Title = "Fisch Notification", Description = "Invalid Rod Name!", Lifetime = 5 })
-            AutoCToggle:UpdateState(false)
-        else
-            config.Enabled = value
-            updateConfig()
-        end
+        config.AutoSell = value
+        updateConfig()
     end,
-}, "ACast")
+}, "ASell")
 
 --// TPLeft
 local locations = {
