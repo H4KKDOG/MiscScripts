@@ -34,37 +34,39 @@ local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 
 local Progress = false
 local Finished = false
+local rodName
 
 getgenv().config = getgenv().config
 local isFirstTime = false
 local configTemplate = {
     Enabled = false,
-    rodName = "RodName",
     AutoSell = false,
-    SellBind = Enum.KeyCode.R
+    SellBind = "R"
 }
 
 if not isfolder("FischConfig") then
     isFirstTime = true
     makefolder("FischConfig")
 end
-if not isfile("FischConfig/Cooked.config") then
+
+if not isfile("FischConfig/Cooked.txt") then
     isFirstTime = true
-    writefile("FischConfig/Cooked.config", "")
+    writefile("FischConfig/Cooked.txt", "")
 end
 
 if isFirstTime then
     local encodedConfig = HttpService:JSONEncode(configTemplate)
-    writefile("FischConfig/Cooked.config", encodedConfig)
+    writefile("FischConfig/Cooked.txt", encodedConfig)
 end
 
 local function loadConfig()
-    local decodedConfig = HttpService:JSONDecode(readfile("FischConfig/Cooked.config"))
+    local decodedConfig = HttpService:JSONDecode(readfile("FischConfig/Cooked.txt"))
     getgenv().config = decodedConfig
 end
+
 local function updateConfig()
     local encodedConfig = HttpService:JSONEncode(getgenv().config)
-    writefile("FischConfig/Cooked.config", encodedConfig)
+    writefile("FischConfig/Cooked.txt", encodedConfig)
 end
 
 loadConfig()
@@ -80,6 +82,19 @@ function replaceAFKEvent()
         Window:Notify({ Title = "Fisch Notification", Description = "AntiAFK", Lifetime = 5 })
         AFK:Destroy()
     end
+end
+
+function updateRodInWorkspace()
+    local playerWorkspace = workspace:FindFirstChild(playerName)
+    if playerWorkspace then
+        for _, item in pairs(playerWorkspace:GetChildren()) do
+            if item:IsA('Tool') and item.Name:lower():find('rod') then
+                rodName = item.Name
+                return item
+            end
+        end
+    end
+    return nil
 end
 
 --// Reel / Shake
@@ -111,6 +126,20 @@ LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
     end
 end)
 
+
+LocalPlayer.Character.ChildAdded:Connect(function(Child)
+    if Child:IsA('Tool') and Child.Name:lower():find('rod') then
+        rodName = Child.Name
+        Rod = Child
+    end
+end)
+
+LocalPlayer.Character.ChildRemoved:Connect(function(Child)
+    if Child.Name == rodName then
+        rodName = nil
+    end
+end)
+
 LocalPlayer.PlayerGui.DescendantRemoving:Connect(function(Descendant)
     if Descendant.Name == 'reel' then
         Finished = false
@@ -125,42 +154,36 @@ end)
 spawn(function()
     while task.wait() do
         if config.Enabled and not Progress then
-            local playerWorkspace = workspace:FindFirstChild(playerName)
-            if playerWorkspace and playerWorkspace:FindFirstChild(config.rodName) then
-                local nRod = playerWorkspace[config.rodName]
+            local nRod = updateRodInWorkspace()
+            if nRod and not nRod:FindFirstChild("bobber") then
+                Progress = true
+                task.wait(2.5)
 
-                if playerWorkspace:FindFirstChild(config.rodName) and not nRod:FindFirstChild("bobber") then
-                    Progress = true
-                    task.wait(2.5)
+                VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, true, game, 1)
+                task.wait(0.25)
+                VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, game, 1)
 
-                    VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, true, game, 1)
-                    task.wait(0.25)
-                    VirtualInputManager:SendMouseButtonEvent(0, 0, Enum.UserInputType.MouseButton1.Value, false, game, 1)
+                wait(0.01)
+                if Character:FindFirstChild(rodName) and nRod:FindFirstChild("events") then
+                    Character:FindFirstChild(rodName).events.reset:FireServer()
+                    Character:FindFirstChild(rodName).events.cast:FireServer(100.5)
+                end
 
-                    wait(0.01)
-                    if Character:FindFirstChild(config.rodName) and nRod:FindFirstChild("events") then
-                        Character:FindFirstChild(config.rodName).events.reset:FireServer()
-                        Character:FindFirstChild(config.rodName).events.cast:FireServer(100.5)
-                    end
+                local bobberCheckDuration = 4.9
+                local checkInterval = 5.0
+                local timeElapsed = 0
 
-                    local bobberCheckDuration = 4.9
-                    local checkInterval = 5.0
-                    local timeElapsed = 0
-
-                    while timeElapsed < bobberCheckDuration do
-                        task.wait(checkInterval)
-                        if nRod:FindFirstChild("bobber") then
-                            break
-                        else
-                            Progress = false
-                        end
-                        timeElapsed = timeElapsed + checkInterval
-                    end
-
-                    if not nRod:FindFirstChild("bobber") then
+                while timeElapsed < bobberCheckDuration do
+                    task.wait(checkInterval)
+                    if nRod:FindFirstChild("bobber") then
+                        break
+                    else
                         Progress = false
                     end
-                else
+                    timeElapsed = timeElapsed + checkInterval
+                end
+
+                if not nRod:FindFirstChild("bobber") then
                     Progress = false
                 end
             else
@@ -176,8 +199,8 @@ spawn(function()
         task.wait(30)
 
         local playerWorkspace = workspace:FindFirstChild(playerName)
-        if playerWorkspace and playerWorkspace:FindFirstChild(config.rodName) then
-            local nRod = playerWorkspace[config.rodName]
+        if playerWorkspace and playerWorkspace:FindFirstChild(rodName) then
+            local nRod = playerWorkspace[rodName]
 
             if not nRod:FindFirstChild("bobber") then
                 Progress = false
@@ -200,7 +223,7 @@ local MiscRight = Misc:Section({ Side = "Right" })
 TPLeft:Header({ Name = "Island" })
 TPRight:Header({ Name = "Spot" })
 
-MiscLeft:Header({ Name = "ExtraFunc" })
+MiscLeft:Header({ Name = "Settings" })
 MiscRight:Header({ Name = "Debugging" })
 
 --// MiscRight
@@ -225,48 +248,28 @@ MiscRight:Button({ Name = "Server Hop",
 })
 
 --// MiscLeft
-local SKeyB = MiscLeft:Keybind({
+MiscLeft:Keybind({
     Name = "Sell Inventory",
-    Callback = function()
+    Default = Enum.KeyCode[config.SellBind],
+    Callback = function(value)
         ReplicatedStorage.events.selleverything:InvokeServer()
         Window:Notify({ Title = "Fisch Notification", Description = "Sell Inventory!", Lifetime = 5 })
-    end,
-    onBinded = function(bind)
-        config.SellBind = bind
+        config.SellBind = tostring(value.Name)
         updateConfig()
-        Window:Notify({ Title = "Fisch Notification", Description = "Set Bind : "..bind, Lifetime = 5 })
     end,
-}, "SellInv")
-SKeyB:Bind(config.SellBind)
-
-local RodInput = MiscLeft:Input({
-    Name = "Rod Name",
-    Placeholder = config.rodName,
-    AcceptedCharacters = "Alphabetic",
-    Callback = function(input)
-        if input == nil or input == "" then
-            RodInput:UpdatePlaceholder(config.rodName)
-            RodInput:UpdatePlaceholder(config.rodName)
-            Window:Notify({ Title = "Fisch Notification", Description = "Invalid Rod Name!", Lifetime = 5 })
-        else
-            config.rodName = input
-            updateConfig()
-            Window:Notify({ Title = "Fisch Notification", Description = "Rod : "..input, Lifetime = 5 })
-        end
+    onBinded = function(value)
+        config.SellBind = tostring(value.Name)
+        updateConfig()
+        Window:Notify({ Title = "Fisch Notification", Description = "Set Bind : "..tostring(value.Name), Lifetime = 5 })
     end,
-}, "RodN")
+}, "SellB")
 
 local AutoCToggle = MiscLeft:Toggle({
     Name = "Auto Cast",
     Default = config.Enabled,
     Callback = function(value)
-        if config.rodName == nil or config.rodName == "" then
-            Window:Notify({ Title = "Fisch Notification", Description = "Invalid Rod Name!", Lifetime = 5 })
-            AutoCToggle:UpdateState(false)
-        else
-            config.Enabled = value
-            updateConfig()
-        end
+        config.Enabled = value
+        updateConfig()
     end,
 }, "ACast")
 
