@@ -319,14 +319,13 @@ end
 
 if UserInputService.KeyboardEnabled and not UserInputService.TouchEnabled then
     Window:SetState(false)
-    repeat
-        wait() 
-    until UserInputService.WindowFocused
-
-    replaceAFKEvent()
+    local WindowAFK
+    WindowAFK = UserInputService.WindowFocused:Connect(function()
+        replaceAFKEvent()
+        WindowAFK:Disconnect()
+    end)
     Window:Notify({ Title = "Fisch Notification", Description = "Loaded!", Lifetime = 5 })
 elseif UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
-
     replaceAFKEvent()
     Window:Notify({ Title = "Fisch Notification", Description = "Loaded!", Lifetime = 5 })
 end
