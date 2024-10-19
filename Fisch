@@ -39,7 +39,8 @@ getgenv().config = getgenv().config
 local isFirstTime = false
 local configTemplate = {
     Enabled = false,
-    rodName = "RodName"
+    rodName = "RodName",
+    SellBind = Enum.KeyCode.R
 }
 
 if not isfolder("FischConfig") then
@@ -209,6 +210,26 @@ MiscRight:Button({ Name = "Get Current Pos",
 })
 
 --// MiscLeft
+
+local SKeyB = MiscLeft:Keybind({
+	Name = "Sell Inventory",
+	Callback = function(binded)
+		Window:Notify({
+			Title = "Kuzu Hub",
+			Description = "Successfully Reset Inventory",
+			Lifetime = 3
+		})
+	end,
+	onBinded = function(bind)
+		Window:Notify({
+			Title = "Kuzu Hub",
+			Description = "Rebinded Reset Inventory to "..tostring(bind.Name),
+			Lifetime = 3
+		})
+	end,
+}, "SellInv")
+SKeyB:Bind(config.SellBind)
+
 local RodInput = MiscLeft:Input({
     Name = "Rod Name",
     Placeholder = config.rodName,
