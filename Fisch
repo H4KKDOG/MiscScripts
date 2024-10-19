@@ -59,12 +59,12 @@ if isFirstTime then
     writefile("FischConfig/Cooked.txt", encodedConfig)
 end
 
-local function loadConfig()
+function loadConfig()
     local decodedConfig = HttpService:JSONDecode(readfile("FischConfig/Cooked.txt"))
     getgenv().config = decodedConfig
 end
 
-local function updateConfig()
+function updateConfig()
     local encodedConfig = HttpService:JSONEncode(getgenv().config)
     writefile("FischConfig/Cooked.txt", encodedConfig)
 end
