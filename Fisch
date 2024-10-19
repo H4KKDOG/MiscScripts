@@ -31,6 +31,7 @@ local LocalPlayer = Players.LocalPlayer
 local playerName = LocalPlayer.Name
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+local playerBobberWorkspace = workspace:FindFirstChild(playerName)
 
 local Progress = false
 local Finished = false
@@ -132,7 +133,7 @@ LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
         local Perfect = randomChance <= 1
 
         if Finished then
-            task.wait(5.0)
+            task.wait(6.9)
             ReplicatedStorage.events.reelfinished:FireServer(100, Perfect)
         end
     end
@@ -149,7 +150,13 @@ end)
 LocalPlayer.Character.ChildRemoved:Connect(function(Child)
     if Child.Name == rodName then
         rodName = nil
-    end
+	end
+end)
+
+playerBobberWorkspace.DescendantRemoving:Connect(function(BobChild)
+	if BobChild.Name == "bobber" then
+		Progress = false
+	end
 end)
 
 LocalPlayer.PlayerGui.DescendantRemoving:Connect(function(Descendant)
@@ -180,39 +187,9 @@ spawn(function()
                     Character:FindFirstChild(rodName).events.reset:FireServer()
                     Character:FindFirstChild(rodName).events.cast:FireServer(100.5)
                 end
-
-                local bobberCheckDuration = 4.9
-                local checkInterval = 5.0
-                local timeElapsed = 0
-
-                while timeElapsed < bobberCheckDuration do
-                    task.wait(checkInterval)
-                    if nRod:FindFirstChild("bobber") then
-                        break
-                    else
-                        Progress = false
-                    end
-                    timeElapsed = timeElapsed + checkInterval
-                end
-
-                if not nRod:FindFirstChild("bobber") then
-                    Progress = false
-                end
             else
                 Progress = false
             end
-        end
-    end
-end)
-
---// Bobber Check
-spawn(function()
-    while task.wait() do
-        task.wait(30)
-        local nRod = updateRodInWorkspace()
-
-        if nRod and not nRod:FindFirstChild("bobber") then
-            Progress = false
         end
     end
 end)
