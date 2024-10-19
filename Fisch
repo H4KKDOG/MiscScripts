@@ -319,7 +319,9 @@ end
 
 if UserInputService.KeyboardEnabled and not UserInputService.TouchEnabled then
     Window:SetState(false)
-    repeat task.wait() until UserInputService.WindowFocused
+    repeat
+        wait() 
+    until UserInputService.WindowFocused
 
     replaceAFKEvent()
     Window:Notify({ Title = "Fisch Notification", Description = "Loaded!", Lifetime = 5 })
