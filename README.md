@@ -8,5 +8,5 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/MiscScripts/r
 ```
 Dex
 ```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/Library/refs/heads/main/Dex"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/H4KKDOG/MiscScripts/refs/heads/main/Dex"))()
 ```
